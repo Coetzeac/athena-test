@@ -1,8 +1,8 @@
 {
   "audit": {
-    "entries": 2,
-    "latest_verdict_hash": "beee81a5eda9d7e5ab86b4ff247d9ead5580dc7769313afd126aa0e0ca29bf1f",
-    "terminal_hash": "beee81a5eda9d7e5ab86b4ff247d9ead5580dc7769313afd126aa0e0ca29bf1f",
+    "entries": 4,
+    "latest_verdict_hash": "e885c8dbacf4a518497a8cb9c4d15f604e8a67761f5702bb9fda050bef4ed5c2",
+    "terminal_hash": "e885c8dbacf4a518497a8cb9c4d15f604e8a67761f5702bb9fda050bef4ed5c2",
     "valid": true
   },
   "counter_evidence": [
@@ -11,7 +11,7 @@
     "No out-of-sample, walk-forward, regime, or front-test evidence exists."
   ],
   "cycle": {
-    "id": "9c78bd4f03d2",
+    "id": "5c32447e7042",
     "instrument": "GBPUSD",
     "recommendation": "Promote the rule set only to the next controlled research stage if every Decision Court gate passes.",
     "strategy_id": "ORB-LONDON-GBPUSD-001",
@@ -19,7 +19,7 @@
     "verdict": "HOLD"
   },
   "decision": {
-    "adjudicated_at": "2026-08-13T07:42:30.478471+00:00",
+    "adjudicated_at": "2026-08-13T09:32:12.324986+00:00",
     "confidence": 0.562493877226366,
     "evidence_weight": 0.5833333333333333,
     "gates": [
@@ -158,5 +158,5 @@
   "schema_version": 1,
   "state": "OPERATIONAL",
   "system": "ATHENA",
-  "updated_at": "2026-08-13T07:42:30.479248+00:00"
+  "updated_at": "2026-08-13T09:32:12.325896+00:00"
 }
