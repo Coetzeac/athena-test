@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ATHENA evidence-governed research operations dashboard">
+  <title>ATHENA // Research Operations</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">EVIDENCE-GOVERNED RESEARCH OS</p>
+        <h1>ATHENA</h1>
+      </div>
+      <div class="system-state"><span id="state-dot"></span><span id="state">LOADING</span></div>
+    </header>
+
+    <main>
+      <section class="hero panel">
+        <div>
+          <p class="label">LATEST COURT VERDICT</p>
+          <p class="verdict" id="verdict">—</p>
+          <h2 id="strategy">Awaiting research cycle</h2>
+          <p class="muted" id="recommendation"></p>
+        </div>
+        <div class="cycle-meta">
+          <div><span>Cycle</span><strong id="cycle-id">—</strong></div>
+          <div><span>Market</span><strong id="market">—</strong></div>
+          <div><span>Updated</span><strong id="updated">—</strong></div>
+        </div>
+      </section>
+
+      <section class="metrics" id="metrics"></section>
+
+      <section class="grid">
+        <article class="panel span-2">
+          <div class="panel-head"><h3>Decision gates</h3><span id="gate-summary">—</span></div>
+          <div class="gates" id="gates"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><h3>Audit chain</h3><span>SHA-256</span></div>
+          <dl class="audit">
+            <div><dt>Integrity</dt><dd id="audit-valid">—</dd></div>
+            <div><dt>Entries</dt><dd id="audit-entries">—</dd></div>
+            <div><dt>Terminal hash</dt><dd class="mono" id="audit-hash">—</dd></div>
+          </dl>
+        </article>
+        <article class="panel span-2">
+          <div class="panel-head"><h3>Counter-evidence</h3><span>MANDATORY</span></div>
+          <ol id="counter-evidence"></ol>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><h3>Required action</h3><span>ENFORCEABLE</span></div>
+          <p id="next-action" class="action">—</p>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <span>No agent bypasses the Decision Court.</span>
+      <span>Promotion is not authority to trade live capital.</span>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
+

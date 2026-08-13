@@ -1,0 +1,14 @@
+{
+  "policy_id": "athena-decision-court-v1",
+  "minimum_sample_size": 30,
+  "target_hit_rate": 0.60,
+  "minimum_expectancy_r": 0.10,
+  "minimum_profit_factor": 1.20,
+  "maximum_drawdown_r": 8.00,
+  "minimum_confidence": 0.45,
+  "minimum_evidence_weight": 0.35,
+  "minimum_evidence_items": 1,
+  "prohibited_promotion_sources": ["synthetic_fixture"],
+  "require_counter_evidence": true,
+  "require_risk_controls": true
+}
