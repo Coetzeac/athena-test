@@ -1,5 +1,9 @@
 # Frozen architecture
 
+This Phase 0 architecture document is subordinate to the complete contract in
+`config/engineering_freeze.json` and [ENGINEERING_FREEZE.md](ENGINEERING_FREEZE.md).
+It must not be read as the entire seven-layer system.
+
 ## Objective
 
 ATHENA is a continuously operating quantitative research organization. Its job

@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "freeze_id": "ATHENA-EF-2026-08-13",
+  "title": "ATHENA complete engineering freeze",
+  "status": "frozen",
+  "approved_at": "2026-08-13T07:12:12Z",
+  "change_rule": "Architecture changes require evidence, tests, an explicit proposal, and human approval.",
+  "source_reconciliation": {
+    "status": "indexed_history_recovered",
+    "limitation": "The complete source conversation export is not stored in this public repository. Unspecified details remain unresolved and must not be invented.",
+    "evidence_ids": ["EF-005", "EF-006"]
+  },
+  "evidence_register": [
+    {
+      "evidence_id": "EF-001",
+      "observed_at": "2026-07-31T16:36:57Z",
+      "authority": "user_directive",
+      "record": "The ATHENA architecture is fixed to seven layers: Knowledge, Evidence, Research, Market Intelligence, Decision Engine, Execution Engine, and Validation Engine."
+    },
+    {
+      "evidence_id": "EF-002",
+      "observed_at": "2026-07-31T16:37:39Z",
+      "authority": "user_directive",
+      "record": "ATHENA is institutional-grade and asset-agnostic; evidence precedes implementation; no Pine implementation before experiments are specified; scale targets are at least 100 papers, 250 experiments, 50 factors, 20 indicators, and 5 strategies."
+    },
+    {
+      "evidence_id": "EF-003",
+      "observed_at": "2026-07-31T16:39:22Z",
+      "authority": "user_directive",
+      "record": "Raw ATR is rejected because it is instrument-dependent; ATR percentile is required. GARCH is deferred because it cannot be faithfully reproduced in Pine Script."
+    },
+    {
+      "evidence_id": "EF-004",
+      "observed_at": "2026-08-13T07:06:43Z",
+      "authority": "user_directive",
+      "record": "ATHENA must operate continuously as a self-improving quantitative research organization that discovers repeatable market mechanics and converts evidence into trading decisions."
+    },
+    {
+      "evidence_id": "EF-005",
+      "observed_at": "2026-08-13T07:12:12Z",
+      "authority": "user_approval",
+      "record": "The 24/7 engineering and research operating model is frozen; subsequent architecture changes require evidence rather than preference."
+    },
+    {
+      "evidence_id": "EF-006",
+      "observed_at": "2026-08-13T07:12:19Z",
+      "authority": "approved_design_record",
+      "record": "The frozen runtime uses GitHub, an Ubuntu VPS, Docker, PostgreSQL, Redis, MinIO or S3, an orchestrator, specialist services, OpenAI API workers, market-data and eventual broker interfaces, Mission Control, and an Operations Director."
+    },
+    {
+      "evidence_id": "EF-007",
+      "observed_at": "2026-08-13T07:26:57Z",
+      "authority": "user_directive",
+      "record": "ChatGPT Work is the permanent ATHENA engineering headquarters."
+    },
+    {
+      "evidence_id": "EF-008",
+      "observed_at": "2026-08-13",
+      "authority": "user_directive",
+      "record": "The complete engineering freeze discussed in 8. Trading interfaces - Athena Daily Progress must be integrated into the repository."
+    },
+    {
+      "evidence_id": "EF-009",
+      "observed_at": "2026-07-31T16:29:11Z",
+      "authority": "approved_design_record",
+      "record": "Google Drive is the authoritative ATHENA research-document repository; Google Sheets control the evidence database, experiment tracker, and research dashboard; Google Docs hold living Research Cards."
+    },
+    {
+      "evidence_id": "EF-010",
+      "observed_at": "2026-07-31T16:24:42Z",
+      "authority": "approved_design_record",
+      "record": "The fixed research pipeline runs from paper through hypothesis, mathematical model, Pine, backtest, walk-forward, Monte Carlo, cross-market validation, and accept or reject; metrics include profit, risk-adjusted performance, drawdown, expectancy, win rate, average trade, and exposure."
+    },
+    {
+      "evidence_id": "EF-011",
+      "observed_at": "2026-07-31T16:38:18Z",
+      "authority": "approved_design_record",
+      "record": "Market Intelligence contains Volatility, Trend, Momentum, Liquidity, and Market State or Regime; Decision contains Probability, Confidence, and Strategy Selection; Execution contains Entry, Position Sizing, and Trade Management; Validation contains walk-forward, Monte Carlo, cross-market, and robustness analysis."
+    },
+    {
+      "evidence_id": "EF-012",
+      "observed_at": "2026-07-31T16:39:56Z",
+      "authority": "approved_design_record",
+      "record": "ATHENA Daily Progress runs at approximately 08:00 South African time and reports completion, research, experiments, decisions, risks, and milestones."
+    },
+    {
+      "evidence_id": "EF-013",
+      "observed_at": "2026-08-06T12:03:43Z",
+      "authority": "approved_design_record",
+      "record": "Decision capabilities include Market State, Strategy Selector, Risk Manager, Evidence Engine, Trade Reviewer, Market Memory, and Skeptic; the Skeptic blocks unsupported, overfit, and material event-risk trades."
+    }
+  ],
+  "mission": {
+    "statement": "Continuously discover repeatable market mechanics, convert evidence into governed trading decisions, learn from completed work and trades, and report operational state without bypassing the Decision Court.",
+    "institutional_grade": true,
+    "asset_agnostic": true,
+    "continuous_operation": true,
+    "evidence_ids": ["EF-002", "EF-004", "EF-005"]
+  },
+  "scale_targets": {
+    "minimum_papers": 100,
+    "minimum_experiments": 250,
+    "minimum_factors": 50,
+    "minimum_indicators": 20,
+    "minimum_strategies": 5,
+    "strategy_target_upper_bound": 10,
+    "evidence_ids": ["EF-002"]
+  },
+  "layers": [
+    {"position": 1, "name": "Knowledge", "purpose": "Acquire and preserve research sources, Research Cards, bibliography, and permanent learning.", "evidence_ids": ["EF-001", "EF-002"]},
+    {"position": 2, "name": "Evidence", "purpose": "Control variables, hypotheses, formulas, evidence links, provenance, and research questions.", "evidence_ids": ["EF-001", "EF-002"]},
+    {"position": 3, "name": "Research", "purpose": "Turn evidence into falsifiable mathematical models and one-variable experiment specifications.", "evidence_ids": ["EF-001", "EF-002"]},
+    {"position": 4, "name": "Market Intelligence", "purpose": "Measure volatility, trend, momentum, liquidity, market state, and regime on a normalized basis.", "evidence_ids": ["EF-001", "EF-003"]},
+    {"position": 5, "name": "Decision Engine", "purpose": "Apply probability, confidence, strategy selection, risk, Skeptic review, and the Decision Court.", "evidence_ids": ["EF-001", "EF-005"]},
+    {"position": 6, "name": "Execution Engine", "purpose": "Control entry logic, position sizing, trade management, and the boundary between research, paper, and eventual live execution.", "evidence_ids": ["EF-001", "EF-005"]},
+    {"position": 7, "name": "Validation Engine", "purpose": "Run walk-forward, Monte Carlo, cross-market, sensitivity, and robustness analysis and reject any failed candidate.", "evidence_ids": ["EF-001", "EF-005"]}
+  ],
+  "core_library": [
+    "Math",
+    "Statistics",
+    "Volatility",
+    "Trend",
+    "Momentum",
+    "Liquidity",
+    "Risk",
+    "Visualisation",
+    "Strategy API"
+  ],
+  "workspaces": [
+    "Mission Control",
+    "Research Lab",
+    "Engineering",
+    "Validation Centre",
+    "Trading Operations"
+  ],
+  "fixed_pipeline": {
+    "stages": [
+      "paper",
+      "Research Card",
+      "hypothesis",
+      "mathematical model",
+      "experiment specification",
+      "Python implementation",
+      "Pine implementation",
+      "backtest",
+      "walk-forward",
+      "Monte Carlo",
+      "cross-market validation",
+      "sensitivity and robustness",
+      "Decision Court accept or reject"
+    ],
+    "rules": [
+      "Evidence precedes implementation.",
+      "Pine work starts only after the experiment is specified.",
+      "Experiments isolate one variable before optimization.",
+      "Promotion requires unseen-data evidence.",
+      "Failure at any required validation stage rejects the candidate.",
+      "Win rate is a secondary metric; it cannot establish an edge by itself."
+    ],
+    "evidence_ids": ["EF-002", "EF-010"]
+  },
+  "validation": {
+    "required_stages": [
+      "in-sample backtest",
+      "walk-forward",
+      "Monte Carlo",
+      "cross-market validation",
+      "parameter sensitivity",
+      "robustness analysis"
+    ],
+    "required_metrics": [
+      "net profit",
+      "profit factor",
+      "Sharpe",
+      "Sortino",
+      "maximum drawdown",
+      "win rate",
+      "expectancy",
+      "average trade",
+      "exposure"
+    ],
+    "promotion_rule": "All required stages must pass; failure at any stage means rejection.",
+    "numeric_threshold_status": "not fully specified in recovered freeze",
+    "evidence_ids": ["EF-010", "EF-011"]
+  },
+  "market_intelligence": {
+    "normalization": "0-100",
+    "families": {
+      "volatility": ["ATR percentile", "historical volatility", "Parkinson", "Garman-Klass", "Yang-Zhang", "HAR-RV proxy"],
+      "trend": ["ADX", "EMA structure", "linear regression slope", "Kaufman efficiency ratio", "Hurst exponent"],
+      "momentum": ["ROC", "log returns", "MACD", "RSI slope", "acceleration"],
+      "liquidity": ["relative volume", "dollar volume", "spread", "session participation"],
+      "state": ["Quiet", "Expansion", "Trending", "Exhaustion"]
+    },
+    "constraints": [
+      "Raw ATR is prohibited as an asset-agnostic score.",
+      "GARCH remains deferred until a faithful Pine-compatible implementation exists."
+    ],
+    "baseline_scores": {
+      "status": "research baseline requiring validation, not an approved trading policy",
+      "volatility_score": {"ATR percentile": 0.30, "historical volatility percentile": 0.25, "daily realised volatility": 0.20, "weekly realised volatility": 0.15, "monthly realised volatility": 0.10},
+      "trend_score": {"ADX": 0.30, "EMA structure": 0.20, "linear regression slope": 0.20, "multi-timeframe alignment": 0.20, "Kaufman efficiency ratio": 0.10},
+      "momentum_score": {"ROC": 0.35, "oscillator": 0.20, "relative volume": 0.15, "acceleration": 0.15, "volatility expansion": 0.15},
+      "athena_probability_score": {"volatility": 0.35, "trend": 0.30, "momentum": 0.20, "liquidity": 0.10, "regime": 0.05},
+      "APS_bands": [
+        {"minimum": 0, "maximum": 30, "label": "no trade"},
+        {"minimum": 30, "maximum": 50, "label": "observe"},
+        {"minimum": 50, "maximum": 70, "label": "small"},
+        {"minimum": 70, "maximum": 85, "label": "standard"},
+        {"minimum": 85, "maximum": 100, "label": "high conviction"}
+      ]
+    },
+    "evidence_ids": ["EF-003", "EF-010", "EF-011"]
+  },
+  "experiment_queue": [
+    {"experiment_id": "ATH-001", "name": "HAR-RV Proxy", "status": "first controlled experiment"},
+    {"experiment_id": "ATH-002", "name": "ATR Percentile", "status": "queued"},
+    {"experiment_id": "ATH-003", "name": "Historical Volatility", "status": "queued"},
+    {"experiment_id": "ATH-004", "name": "ADX", "status": "queued"},
+    {"experiment_id": "ATH-005", "name": "Linear Regression Slope", "status": "queued"},
+    {"experiment_id": "ATH-006", "name": "Kaufman Efficiency Ratio", "status": "queued"},
+    {"experiment_id": "ATH-007", "name": "ROC", "status": "queued"},
+    {"experiment_id": "ATH-008", "name": "Relative Volume", "status": "queued"},
+    {"experiment_id": "ATH-009", "name": "Hurst", "status": "queued"},
+    {"experiment_id": "ATH-010", "name": "Regime Classifier", "status": "queued"}
+  ],
+  "first_experiment": {
+    "experiment_id": "ATH-001",
+    "name": "HAR-RV Proxy",
+    "academic_formula": "RV(t+1) = beta0 + beta1*RV_daily + beta2*RV_weekly + beta3*RV_monthly",
+    "components": ["20-day historical volatility", "5-day historical-volatility average", "22-day historical-volatility average", "ATR percentile"],
+    "acceptance": ["reproducible implementation", "Python and Pine parity", "walk-forward validation", "cross-market robustness", "complete documentation"],
+    "evidence_ids": ["EF-003"]
+  },
+  "specialist_services": [
+    {"name": "Research", "trigger": "hourly", "output": "Research Cards with evidence links"},
+    {"name": "Feature", "trigger": "new accepted Research Card", "output": "formulas, variables, and feature specifications"},
+    {"name": "Experiment", "trigger": "approved experiment specification", "output": "reproducible backtest results"},
+    {"name": "Validation", "trigger": "completed experiment", "output": "stage results and reject or submit recommendation"},
+    {"name": "Market", "trigger": "minute-level schedule", "output": "market data, features, state, and regime"},
+    {"name": "Decision Court", "trigger": "qualified opportunity", "output": "governed recommendation or rejection"},
+    {"name": "Learning", "trigger": "completed trade or experiment", "output": "memory and failure-library update"},
+    {"name": "Operations Director", "trigger": "continuous", "output": "health, failure, latency, cost, queue, and backlog controls"}
+  ],
+  "decision_capabilities": [
+    "Market State",
+    "Strategy Selector",
+    "Risk Manager",
+    "Evidence Engine",
+    "Trade Reviewer",
+    "Market Memory",
+    "Skeptic"
+  ],
+  "skeptic_rule": "The Skeptic blocks unsupported, overfit, or material event-risk recommendations.",
+  "decision_capability_evidence_ids": ["EF-013"],
+  "runtime": {
+    "server": {"operating_system": "Ubuntu", "minimum_cpu": 4, "minimum_ram_gb": 8, "minimum_storage_gb": 100},
+    "container_platform": "Docker",
+    "services": ["athena-api", "athena-research", "athena-validation", "postgres", "redis", "minio-or-s3", "grafana", "nginx", "orchestrator"],
+    "execution_model": "The platform schedules software agents and invokes GPT through an API as a bounded reasoning worker. ChatGPT is not the continuous runtime.",
+    "required_external_interfaces": ["OpenAI API", "market-data provider", "domain and TLS", "eventual broker interface"],
+    "evidence_ids": ["EF-005", "EF-006"]
+  },
+  "research_sources": {
+    "cadence": "hourly discovery",
+    "sources": ["arXiv", "SSRN", "NBER", "academic journals", "quantitative research blogs", "GitHub"],
+    "artifacts": ["source document", "Research Card", "paper notes", "bibliography", "evidence links"],
+    "evidence_ids": ["EF-004", "EF-005", "EF-006"]
+  },
+  "systems_of_record": [
+    {"system": "ChatGPT Work", "authority": "permanent engineering headquarters and human coordination surface", "evidence_ids": ["EF-007"]},
+    {"system": "GitHub", "authority": "version-controlled code, configuration, executable specifications, tests, and engineering history", "evidence_ids": ["EF-005", "EF-006"]},
+    {"system": "Google Drive", "authority": "authoritative research-document repository and permanent research record", "evidence_ids": ["EF-009"]},
+    {"system": "Google Sheets", "authority": "evidence database, experiment tracker, and research dashboard until migrated through controlled change", "evidence_ids": ["EF-009"]},
+    {"system": "Google Docs", "authority": "living Research Cards and research documentation", "evidence_ids": ["EF-009"]},
+    {"system": "PostgreSQL", "authority": "runtime knowledge memory and operational state", "evidence_ids": ["EF-006"]},
+    {"system": "MinIO or S3", "authority": "runtime object storage for papers, charts, data, and reports", "evidence_ids": ["EF-006"]},
+    {"system": "TradingView", "authority": "Pine development, visual verification, backtest comparison, alerting, and controlled trading interface", "evidence_ids": ["EF-003", "EF-010"]}
+  ],
+  "record_collections": [
+    "Papers",
+    "Authors",
+    "Variables",
+    "Mathematical Formulae",
+    "Experiments",
+    "Indicators",
+    "Strategies",
+    "Validation Results",
+    "Accepted Models",
+    "Rejected Models",
+    "Future Ideas"
+  ],
+  "drive_structure": {
+    "00_Project_Charter": ["ATHENA Vision", "Research Constitution", "Roadmap", "Version History"],
+    "01_Literature_Review": ["Papers", "Research Cards", "Paper Notes", "Bibliography"],
+    "02_Evidence_Database": ["Variables Register", "Hypotheses Register", "Evidence Matrix", "Research Questions"],
+    "03_Mathematical_Models": ["Volatility", "Trend", "Momentum", "Regime Detection", "Risk"],
+    "04_PineScript": ["Indicators", "Strategies", "Libraries", "Releases"],
+    "05_Backtesting": ["TradingView Exports", "Walk Forward", "Monte Carlo", "Performance Reports"],
+    "06_Experiments": ["ATH-001", "ATH-002", "ATH-003"],
+    "07_Decisions": ["Accepted", "Rejected", "Future Research"],
+    "08_Dashboard": ["Master Database", "KPI Dashboard", "Research Progress"],
+    "09_Reference_Library": ["Academic Papers", "Statistics", "Quantitative Finance", "Market Microstructure", "Risk Management"],
+    "10_Archive": []
+  },
+  "mission_control": {
+    "daily_report": {"name": "ATHENA Daily Progress", "time": "08:00", "timezone": "Africa/Johannesburg", "fields": ["completion", "research", "experiments", "decisions", "risks", "milestones"]},
+    "operations_monitoring": ["failures", "latency", "API health", "database health", "GPT costs", "queue depth", "backlog"],
+    "evidence_ids": ["EF-006", "EF-012"]
+  },
+  "human_authority": {
+    "role": "Owner/CIO",
+    "powers": ["approve protected changes", "approve promotion to controlled live execution", "set budgets and risk authority", "order shutdown"],
+    "execution_default": "live execution prohibited until separately approved",
+    "evidence_ids": ["EF-005", "EF-006"]
+  },
+  "requirements": [
+    {"requirement_id": "FR-001", "name": "Continuous institutional mission"},
+    {"requirement_id": "FR-002", "name": "Seven fixed layers"},
+    {"requirement_id": "FR-003", "name": "Research scale targets"},
+    {"requirement_id": "FR-004", "name": "Evidence-first fixed pipeline"},
+    {"requirement_id": "FR-005", "name": "Asset-agnostic market intelligence"},
+    {"requirement_id": "FR-006", "name": "Experiment queue and ATH-001"},
+    {"requirement_id": "FR-007", "name": "Full validation protocol"},
+    {"requirement_id": "FR-008", "name": "Decision Court and Skeptic"},
+    {"requirement_id": "FR-009", "name": "Specialist services"},
+    {"requirement_id": "FR-010", "name": "24/7 VPS and container runtime"},
+    {"requirement_id": "FR-011", "name": "Runtime knowledge and object storage"},
+    {"requirement_id": "FR-012", "name": "Mission Control and Daily Progress"},
+    {"requirement_id": "FR-013", "name": "Controlled systems of record"},
+    {"requirement_id": "FR-014", "name": "TradingView and Pine parity interface"},
+    {"requirement_id": "FR-015", "name": "Human authority and live-execution prohibition"},
+    {"requirement_id": "FR-016", "name": "GPT worker boundary"},
+    {"requirement_id": "FR-017", "name": "Change control and evidence traceability"}
+  ],
+  "unresolved_specifications": [
+    "Selected market-data provider and commercial licence",
+    "Selected broker and broker API",
+    "Exact cross-market instrument universe and history window",
+    "Numeric walk-forward, Monte Carlo, sensitivity, and robustness parameters",
+    "Production position, portfolio, daily-loss, and kill-switch limits",
+    "VPS provider, domain, and deployment credentials",
+    "Service-level objectives, recovery-point objective, and recovery-time objective",
+    "Monthly GPT, data, storage, and infrastructure budgets",
+    "Complete source conversation export for line-by-line reconciliation"
+  ]
+}
