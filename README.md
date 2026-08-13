@@ -8,6 +8,19 @@ the Decision Court.
 This repository is the active public engineering environment. It contains no
 private trading data, credentials, Gmail/Drive records, or live brokerage keys.
 
+## Complete engineering freeze
+
+The complete recovered freeze from **8. Trading interfaces – Athena Daily
+Progress** is controlled by `config/engineering_freeze.json`. It fixes the
+seven-layer architecture, institutional-scale research targets, evidence-first
+pipeline, market-mechanics program, specialist organization, 24/7 VPS runtime,
+systems of record, TradingView boundary, Mission Control, and human authority.
+
+Run `make freeze` to validate the contract and its implementation mapping. The
+current repository implements Phase 0 only; documentation or scaffolding is not
+reported as a completed service. See [the complete freeze](docs/ENGINEERING_FREEZE.md)
+and [the implementation register](docs/FREEZE_TRACEABILITY.md).
+
 ## Current executable slice
 
 ```mermaid
@@ -41,6 +54,7 @@ Python 3.11 or later is the only runtime dependency.
 
 ```bash
 make test
+make freeze
 make demo
 make dashboard
 ```

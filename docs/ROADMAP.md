@@ -1,5 +1,8 @@
 # Delivery plan
 
+The roadmap is governed by the complete engineering freeze and its traceability
+register. Phase labels do not override a frozen requirement or acceptance gate.
+
 ## Phase 0 — executable kernel
 
 - Evidence identity contract and tamper-evident ledger.
@@ -41,4 +44,3 @@ traceable to code, data, policy, and a prior Court verdict.
 
 Acceptance: independent security and risk review; documented owner approval;
 tested fail-closed behaviour. No live capital is permitted before acceptance.
-

@@ -16,6 +16,12 @@ kernel while implementing a feature.
    own controls.
 7. Never commit credentials, private correspondence, personal information, or
    production trading keys. The public test repository uses synthetic data only.
+8. `config/engineering_freeze.json` is the canonical architecture contract.
+   Every material architecture claim must cite its `EF-*` evidence record.
+9. Run `athena freeze-status` before changing a frozen requirement. Missing,
+   reduced, reordered, or unmapped controls are build failures.
+10. Do not label a documented or scaffolded requirement as implemented. Use the
+    traceability statuses and acceptance criteria exactly.
 
 ## Definition of done
 
@@ -25,4 +31,11 @@ kernel while implementing a feature.
 - New decisions expose gate results and exact reasons.
 - Documentation describes authority, process, evidence, accountability, and
   remedy for any governance change.
+- The engineering freeze and traceability mapping validate.
 
+## Protected architecture changes
+
+The seven layers, minimum research targets, fixed pipeline, required validation
+stages, specialist services, runtime services, systems of record, daily progress
+control, human authority, and live-execution prohibition are protected. A change
+requires an evidence-backed proposal, tests, and explicit Owner/CIO approval.
