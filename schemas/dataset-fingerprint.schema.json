@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/dataset-fingerprint.schema.json",
+  "title": "ATHENA Dataset Fingerprint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "dataset_name",
+    "source",
+    "source_locator",
+    "content_sha256",
+    "extraction_config_sha256",
+    "row_count",
+    "fields",
+    "universe",
+    "timeframe",
+    "period_start",
+    "period_end",
+    "acquired_at",
+    "fingerprint_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "dataset_id": {"type": "string", "pattern": "^ATH-DAT-[0-9A-F]{24}$"},
+    "dataset_name": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "source_locator": {"type": "string", "minLength": 1},
+    "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "extraction_config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "row_count": {"type": "integer", "minimum": 1},
+    "fields": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "universe": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "timeframe": {"type": "string", "minLength": 1},
+    "period_start": {"type": ["string", "null"]},
+    "period_end": {"type": ["string", "null"]},
+    "acquired_at": {"type": "string", "format": "date-time"},
+    "fingerprint_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

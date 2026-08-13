@@ -63,6 +63,13 @@ An evidence reference has a stable ID, source class, locator, observed time, and
 SHA-256 digest. The digest proves content identity only when the referenced bytes
 are retained and independently retrievable.
 
+The executable evidence foundation adds controlled record contracts for papers,
+Research Cards, hypotheses, datasets, experiments, factors, indicators,
+strategies, and validation results. Stable IDs are derived from canonical
+identity fields, while separate content, provenance, record, and dataset
+fingerprint digests expose silent mutation. Every appended record must reconcile
+to one hash-chained `evidence_record_registered` event. [EF-002, EF-009, EF-010]
+
 A research request states the claim, mechanism, recommendation, instrument,
 timeframe, outcomes, evidence references, counter-evidence, assumptions,
 methodology, and risk controls. The evaluator rejects structurally incomplete
@@ -75,7 +82,9 @@ bars them from promotion evidence.
 
 ## Audit model
 
-Every cycle appends canonical JSON events to a SHA-256 hash chain. Validation
+Every cycle first registers its dataset, strategy, and experiment evidence,
+then appends submission and Court events, and finally registers the validation
+result. Every event uses canonical JSON in a SHA-256 hash chain. Validation
 detects modification, removal, reordering, and insertion after the chain has
 been anchored. A local chain is tamper-evident, not independently immutable;
 production must anchor terminal hashes outside the write domain.

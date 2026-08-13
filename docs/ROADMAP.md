@@ -6,6 +6,8 @@ register. Phase labels do not override a frozen requirement or acceptance gate.
 ## Phase 0 — executable kernel
 
 - Evidence identity contract and tamper-evident ledger.
+- Repository-backed knowledge records, provenance, dataset fingerprints, and
+  register-to-ledger reconciliation.
 - Deterministic performance evaluation.
 - Adversarial challenge and risk fields.
 - Versioned Decision Court gates.

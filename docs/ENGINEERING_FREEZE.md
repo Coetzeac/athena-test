@@ -8,6 +8,12 @@ that contract governs delivery. Removing or weakening a frozen component is a
 protected change and requires evidence, tests, an explicit proposal, and Owner/CIO
 approval.
 
+The executable Knowledge/Evidence increment is controlled by
+`config/evidence_registers.json` and [EVIDENCE_FOUNDATION.md](EVIDENCE_FOUNDATION.md).
+It implements stable record identity, provenance, dataset fingerprints, and
+register-ledger reconciliation without claiming that the research corpus or
+production systems of record are complete. [EF-002, EF-009, EF-010]
+
 The recovered evidence register is deliberately honest about its limit: the
 public repository does not contain a complete export of the original Project
 conversation. Requirements recovered from the indexed history are integrated.
@@ -184,4 +190,3 @@ The recovered freeze does not establish the market-data vendor, broker, exact
 instrument universe, history window, numeric validation parameters, production
 risk limits, VPS provider, domain, SLO, RPO, RTO, or operating budgets. Those
 items require separate evidence-backed proposals and Owner/CIO approval.
-

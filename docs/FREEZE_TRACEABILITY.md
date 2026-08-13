@@ -2,11 +2,13 @@
 
 ## Verdict
 
-The complete engineering freeze is now integrated as a controlled specification,
-but it is not fully implemented. The executable Phase 0 kernel covers the Court,
-basic metrics, ledger, CLI, CI, and a partial dashboard. The research organization,
-data plane, validation laboratory, durable runtime, Drive system of record, Pine
-parity, and controlled trading interfaces remain incomplete.
+The complete engineering freeze is integrated as a controlled specification,
+but it is not fully implemented. The executable Phase 0 kernel now covers stable
+knowledge-record identities, provenance, dataset fingerprints, an append-only
+evidence register, register-ledger reconciliation, the Court, basic metrics,
+CLI, CI, and a partial dashboard. The research corpus, market-data plane,
+validation laboratory, durable runtime, Drive system of record, Pine parity,
+and controlled trading interfaces remain incomplete.
 
 The authoritative machine register is `config/freeze_traceability.json`. Its
 status terms mean:
@@ -24,8 +26,8 @@ status terms mean:
 | Requirement | State | Principal deficiency |
 |---|---|---|
 | FR-001 Continuous mission | Partial | No complete continuous research/learning organization |
-| FR-002 Seven layers | Scaffolded | Contracts exist; most executable interfaces do not |
-| FR-003 Scale targets | Pending | Registers and evidence corpus do not exist |
+| FR-002 Seven layers | Partial | Knowledge/Evidence contracts execute; the remaining layers lack complete stable interfaces |
+| FR-003 Scale targets | Partial | Register capability exists; the required evidence corpus and counts do not |
 | FR-004 Fixed pipeline | Partial | Phase 0 packet-to-Court path only |
 | FR-005 Market intelligence | Pending | No normalized feature engine |
 | FR-006 Experiment queue | Scaffolded | Queue recorded; ATH-001 not implemented |
@@ -43,9 +45,10 @@ status terms mean:
 
 ## Next enforceable build order
 
-1. Implement the knowledge/evidence schemas and stable IDs.
-2. Implement a licensed market-data adapter and immutable dataset fingerprints
-   only after the provider and universe are approved.
+1. Populate papers, Research Cards, hypotheses, and related records through the
+   controlled evidence contract and approved systems of record.
+2. Implement a licensed market-data adapter against the existing fingerprint
+   contract only after the provider and universe are approved.
 3. Implement ATH-001 in Python with reproducible test fixtures.
 4. Implement the walk-forward, Monte Carlo, cross-market, sensitivity, and
    robustness gates.
@@ -55,4 +58,3 @@ status terms mean:
 8. Extend Mission Control and activate the 08:00 SAST Daily Progress report.
 
 No later step may be used to bypass an earlier evidence or validation gate.
-
