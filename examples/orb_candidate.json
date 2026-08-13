@@ -1,0 +1,41 @@
+{
+  "strategy_id": "ORB-LONDON-GBPUSD-001",
+  "claim": "A London-session opening-range break with fixed risk has a repeatable positive expectancy in the declared synthetic sample.",
+  "mechanism": "Early-session order imbalance creates a directional expansion after price leaves the first 30-minute range.",
+  "recommendation": "Promote the rule set only to the next controlled research stage if every Decision Court gate passes.",
+  "instrument": "GBPUSD",
+  "timeframe": "5m entries; 30m opening range",
+  "methodology": "Synthetic ordered R-multiple outcomes evaluated without parameter search. This fixture tests governance plumbing, not market edge.",
+  "assumptions": [
+    "Each outcome already includes the declared synthetic stop and target logic.",
+    "No outcome has been removed after observation.",
+    "The ordering is preserved for drawdown calculation."
+  ],
+  "trade_outcomes_r": [
+    1.4, -1.0, 1.2, 0.8, -1.0, 1.5, 1.0, -0.9, 1.3, 0.7,
+    1.1, -1.0, 1.6, 0.9, -0.8, 1.2, 1.4, -1.0, 0.6, 1.3,
+    -0.9, 1.0, 1.5, -1.0, 0.8, 1.1, 1.2, -0.7, 1.4, 0.9,
+    -1.0, 1.3, 0.7, 1.6, -0.8, 1.1, 1.0, -1.0, 1.5, 0.8,
+    1.2, -0.9, 1.4, 0.7, -1.0, 1.3, 1.1, -0.8, 1.5, 0.9
+  ],
+  "evidence": [
+    {
+      "evidence_id": "E-SYNTH-ORB-001",
+      "source": "synthetic_fixture",
+      "locator": "examples/orb_candidate.json#trade_outcomes_r",
+      "sha256": "5cbb6dc582027558d5749f1e73ca8ced838ea8a2b074778395d7b9d01945086f",
+      "observed_at": "2026-08-13T00:00:00+00:00"
+    }
+  ],
+  "counter_evidence": [
+    "The outcomes are synthetic and cannot establish a live-market edge.",
+    "Transaction costs, spread expansion, slippage, and execution latency are absent.",
+    "No out-of-sample, walk-forward, regime, or front-test evidence exists."
+  ],
+  "risk_controls": {
+    "live_execution": "prohibited",
+    "maximum_risk_per_trade_percent": 0.25,
+    "maximum_daily_loss_r": 2.0,
+    "kill_switch": "three consecutive losses or data-integrity failure"
+  }
+}
