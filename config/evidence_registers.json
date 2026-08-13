@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "contract_id": "ATHENA-EVIDENCE-FOUNDATION-001",
+  "status": "executable_phase_0_contract",
+  "authority": {
+    "evidence_ids": ["EF-002", "EF-009", "EF-010"],
+    "rule": "Evidence and provenance are registered before an experiment is submitted to the Decision Court."
+  },
+  "stable_id": {
+    "format": "ATH-{TYPE_PREFIX}-{24_UPPERCASE_HEX}",
+    "algorithm": "SHA-256 over canonical JSON containing namespace, schema version, record type, and immutable identity",
+    "mutation_rule": "A stable ID cannot be reused for different content. A changed identity creates a new record."
+  },
+  "register": {
+    "path": "runtime/evidence-register.jsonl",
+    "write_model": "append_only_canonical_jsonl",
+    "ledger_event": "evidence_record_registered",
+    "reconciliation_rule": "Every register record must have exactly one matching hash-chained ledger event."
+  },
+  "schemas": {
+    "knowledge_record": "schemas/knowledge-record.schema.json",
+    "dataset_fingerprint": "schemas/dataset-fingerprint.schema.json"
+  },
+  "record_types": [
+    {"record_type": "paper", "prefix": "PAP", "required_identity_fields": ["canonical_locator"]},
+    {"record_type": "research_card", "prefix": "RSC", "required_identity_fields": ["source_record_ids", "version"]},
+    {"record_type": "hypothesis", "prefix": "HYP", "required_identity_fields": ["hypothesis_key", "version"]},
+    {"record_type": "dataset", "prefix": "DAT", "required_identity_fields": ["fingerprint_sha256"]},
+    {"record_type": "experiment", "prefix": "EXP", "required_identity_fields": ["experiment_key", "specification_sha256"]},
+    {"record_type": "factor", "prefix": "FAC", "required_identity_fields": ["factor_key", "version"]},
+    {"record_type": "indicator", "prefix": "IND", "required_identity_fields": ["indicator_key", "version"]},
+    {"record_type": "strategy", "prefix": "STR", "required_identity_fields": ["strategy_key", "specification_sha256"]},
+    {"record_type": "validation_result", "prefix": "VAL", "required_identity_fields": ["experiment_record_id", "result_sha256"]}
+  ],
+  "boundary": "This contract supplies repository-backed Phase 0 identity and integrity controls. It does not satisfy the frozen research-volume targets or replace the future PostgreSQL and Google Drive systems of record."
+}

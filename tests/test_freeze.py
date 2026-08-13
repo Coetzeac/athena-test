@@ -21,6 +21,13 @@ class EngineeringFreezeTests(unittest.TestCase):
         self.assertEqual(status["layers"], 7)
         self.assertEqual(status["requirements"], 17)
         self.assertEqual(mapping["requirements"], 17)
+        self.assertEqual(mapping["status_counts"], {
+            "blocked_external": 2,
+            "implemented": 1,
+            "partial": 7,
+            "pending": 4,
+            "scaffolded": 3,
+        })
 
     def test_layer_removal_is_rejected(self) -> None:
         freeze = load_freeze(FREEZE_PATH)
@@ -58,4 +65,3 @@ class EngineeringFreezeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

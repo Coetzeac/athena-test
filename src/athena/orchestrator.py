@@ -8,6 +8,7 @@ from athena.court import DecisionCourt, DecisionPolicy
 from athena.evidence import EvidenceLedger, canonical_json, sha256_text
 from athena.metrics import calculate_metrics
 from athena.models import EvidenceRef, ResearchPacket, utc_now
+from athena.records import DatasetFingerprint, EvidenceRegister, KnowledgeRecord, Provenance, RecordType
 
 
 def load_request(path: str | Path) -> tuple[ResearchPacket, dict[str, Any]]:
@@ -37,15 +38,135 @@ def load_request(path: str | Path) -> tuple[ResearchPacket, dict[str, Any]]:
     return packet, raw
 
 
+def _cycle_provenance(
+    packet: ResearchPacket,
+    request_path: str | Path,
+    request_sha256: str,
+) -> Provenance:
+    if not packet.evidence:
+        raise ValueError("a governed cycle requires at least one immutable evidence reference")
+    evidence_ids = tuple(item.evidence_id for item in packet.evidence)
+    synthetic_only = all(item.source == "synthetic_fixture" for item in packet.evidence)
+    return Provenance(
+        source_type="synthetic_fixture" if synthetic_only else "declared_research_request",
+        source_locator=str(request_path),
+        source_sha256=request_sha256,
+        observed_at=packet.evidence[0].observed_at,
+        acquisition_method="repository_fixture" if synthetic_only else "declared_source_ingestion",
+        usage_rights="synthetic-test-only" if synthetic_only else "declared-rights-unverified",
+        evidence_ids=evidence_ids,
+    )
+
+
+def _register_cycle_inputs(
+    packet: ResearchPacket,
+    raw: dict[str, Any],
+    request_path: str | Path,
+    policy_path: str | Path,
+    register: EvidenceRegister,
+    ledger: EvidenceLedger,
+) -> dict[str, KnowledgeRecord]:
+    request_text = Path(request_path).read_text(encoding="utf-8")
+    request_sha256 = sha256_text(request_text)
+    provenance = _cycle_provenance(packet, request_path, request_sha256)
+    evidence_ids = tuple(item.evidence_id for item in packet.evidence)
+    outcomes_sha256 = sha256_text(canonical_json(raw["trade_outcomes_r"]))
+    extraction_config_sha256 = sha256_text(canonical_json({
+        "field": "trade_outcomes_r",
+        "ordered": True,
+        "unit": "R-multiple",
+    }))
+    fingerprint = DatasetFingerprint.create(
+        dataset_name=f"{packet.strategy_id} declared outcomes",
+        source=provenance.source_type,
+        source_locator=f"{request_path}#trade_outcomes_r",
+        content_sha256=outcomes_sha256,
+        extraction_config_sha256=extraction_config_sha256,
+        row_count=len(raw["trade_outcomes_r"]),
+        fields=("trade_outcome_r",),
+        universe=(packet.instrument,),
+        timeframe=packet.timeframe,
+        acquired_at=provenance.observed_at,
+    )
+    dataset = KnowledgeRecord.create(
+        record_type=RecordType.DATASET,
+        title=fingerprint.dataset_name,
+        identity={"fingerprint_sha256": fingerprint.fingerprint_sha256},
+        provenance=provenance,
+        evidence_ids=evidence_ids,
+        related_record_ids=(),
+        content={"dataset_fingerprint": fingerprint.to_dict()},
+    )
+
+    strategy_specification = {
+        "strategy_key": packet.strategy_id,
+        "claim": packet.claim,
+        "mechanism": packet.mechanism,
+        "instrument": packet.instrument,
+        "timeframe": packet.timeframe,
+        "risk_controls": packet.risk_controls,
+    }
+    strategy_specification_sha256 = sha256_text(canonical_json(strategy_specification))
+    strategy = KnowledgeRecord.create(
+        record_type=RecordType.STRATEGY,
+        title=packet.strategy_id,
+        identity={
+            "strategy_key": packet.strategy_id,
+            "specification_sha256": strategy_specification_sha256,
+        },
+        provenance=provenance,
+        evidence_ids=evidence_ids,
+        related_record_ids=(),
+        content=strategy_specification,
+    )
+
+    policy_sha256 = sha256_text(Path(policy_path).read_text(encoding="utf-8"))
+    experiment_specification = {
+        "experiment_key": f"{packet.strategy_id}:declared-outcome-evaluation",
+        "strategy_record_id": strategy.record_id,
+        "dataset_record_id": dataset.record_id,
+        "methodology": packet.methodology,
+        "assumptions": list(packet.assumptions),
+        "counter_evidence": list(packet.counter_evidence),
+        "policy_sha256": policy_sha256,
+    }
+    experiment_specification_sha256 = sha256_text(canonical_json(experiment_specification))
+    experiment = KnowledgeRecord.create(
+        record_type=RecordType.EXPERIMENT,
+        title=f"Declared-outcome evaluation for {packet.strategy_id}",
+        identity={
+            "experiment_key": experiment_specification["experiment_key"],
+            "specification_sha256": experiment_specification_sha256,
+        },
+        provenance=provenance,
+        evidence_ids=evidence_ids,
+        related_record_ids=(dataset.record_id, strategy.record_id),
+        content=experiment_specification,
+    )
+
+    for record in (dataset, strategy, experiment):
+        register.append(record, ledger)
+    return {"dataset": dataset, "strategy": strategy, "experiment": experiment}
+
+
 def run_cycle(
     request_path: str | Path,
     policy_path: str | Path,
     ledger_path: str | Path,
     status_path: str | Path,
+    register_path: str | Path | None = None,
 ) -> dict[str, Any]:
     ledger = EvidenceLedger(ledger_path)
     ledger.validate()
     packet, raw = load_request(request_path)
+    packet_failures = packet.validate()
+    if packet_failures:
+        raise ValueError("; ".join(packet_failures))
+    register = EvidenceRegister(
+        register_path if register_path is not None else Path(ledger_path).with_name("evidence-register.jsonl")
+    )
+    registered = _register_cycle_inputs(packet, raw, request_path, policy_path, register, ledger)
+    input_record_ids = {name: record.record_id for name, record in registered.items()}
 
     cycle_entry = ledger.append(
         "research_packet_submitted",
@@ -55,6 +176,7 @@ def run_cycle(
             "request_path": str(request_path),
             "declared_outcomes": len(raw["trade_outcomes_r"]),
             "evidence_ids": [item.evidence_id for item in packet.evidence],
+            "evidence_record_ids": input_record_ids,
         },
     )
     court = DecisionCourt(DecisionPolicy.from_file(policy_path))
@@ -66,8 +188,46 @@ def run_cycle(
             "strategy_id": packet.strategy_id,
             "packet": packet.to_dict(),
             "decision": decision.to_dict(),
+            "evidence_record_ids": input_record_ids,
         },
     )
+    decision_payload = decision.to_dict()
+    result_sha256 = sha256_text(canonical_json(decision_payload))
+    validation_evidence_ids = tuple(dict.fromkeys((
+        "EF-010",
+        *(item.evidence_id for item in packet.evidence),
+    )))
+    validation_provenance = Provenance(
+        source_type="athena_decision_court",
+        source_locator=f"ledger:{verdict_entry['hash']}",
+        source_sha256=verdict_entry["hash"],
+        observed_at=decision.adjudicated_at,
+        acquisition_method="deterministic_policy_adjudication",
+        usage_rights="internal-generated-record",
+        evidence_ids=validation_evidence_ids,
+    )
+    validation = KnowledgeRecord.create(
+        record_type=RecordType.VALIDATION_RESULT,
+        title=f"Decision Court result for {packet.strategy_id}",
+        identity={
+            "experiment_record_id": registered["experiment"].record_id,
+            "result_sha256": result_sha256,
+        },
+        provenance=validation_provenance,
+        evidence_ids=validation_evidence_ids,
+        related_record_ids=(
+            registered["dataset"].record_id,
+            registered["strategy"].record_id,
+            registered["experiment"].record_id,
+        ),
+        content={
+            "experiment_record_id": registered["experiment"].record_id,
+            "metrics": packet.to_dict()["metrics"],
+            "decision": decision_payload,
+        },
+    )
+    register.append(validation, ledger)
+    evidence_status = register.validate(ledger)
     ledger_status = ledger.validate()
 
     status = {
@@ -90,6 +250,13 @@ def run_cycle(
         "audit": {
             **ledger_status,
             "latest_verdict_hash": verdict_entry["hash"],
+        },
+        "evidence_register": {
+            **evidence_status,
+            "cycle_record_ids": {
+                **input_record_ids,
+                "validation_result": validation.record_id,
+            },
         },
         "next_action": (
             "Eligible for the next controlled research stage; live execution remains prohibited."

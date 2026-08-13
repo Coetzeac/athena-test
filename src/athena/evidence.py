@@ -12,7 +12,13 @@ GENESIS_HASH = "0" * 64
 
 
 def canonical_json(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    )
 
 
 def sha256_text(value: str) -> str:
@@ -58,6 +64,11 @@ class EvidenceLedger:
             handle.write(canonical_json(entry) + "\n")
         return entry
 
+    def entries(self) -> tuple[dict[str, Any], ...]:
+        """Return validated ledger entries for controlled reconciliation."""
+        self.validate()
+        return tuple(self._entries())
+
     def validate(self) -> dict[str, Any]:
         entries = self._entries()
         previous_hash = GENESIS_HASH
@@ -76,4 +87,3 @@ class EvidenceLedger:
             "entries": len(entries),
             "terminal_hash": previous_hash,
         }
-

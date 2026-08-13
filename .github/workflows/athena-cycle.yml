@@ -26,14 +26,16 @@ jobs:
       - name: Prove kernel before research
         run: python -m unittest discover -s tests -v
       - name: Run governed research cycle
-        run: athena run examples/orb_candidate.json --ledger runtime/ledger.jsonl --status runtime/status.json
+        run: athena run examples/orb_candidate.json --ledger runtime/ledger.jsonl --register runtime/evidence-register.jsonl --status runtime/status.json
       - name: Validate audit chain
         run: athena validate-ledger runtime/ledger.jsonl
+      - name: Reconcile evidence register and audit ledger
+        run: athena validate-register runtime/evidence-register.jsonl --ledger runtime/ledger.jsonl
       - name: Preserve changed audit state
         run: |
           git config user.name "athena-research-bot"
           git config user.email "athena-research-bot@users.noreply.github.com"
-          git add runtime/ledger.jsonl runtime/status.json
+          git add runtime/ledger.jsonl runtime/evidence-register.jsonl runtime/status.json
           git diff --cached --quiet && exit 0
           git commit -m "chore(runtime): record governed research cycle [skip ci]"
           git push
@@ -43,5 +45,6 @@ jobs:
           name: athena-cycle-${{ github.run_id }}
           path: |
             runtime/ledger.jsonl
+            runtime/evidence-register.jsonl
             runtime/status.json
           retention-days: 90

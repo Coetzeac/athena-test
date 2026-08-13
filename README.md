@@ -37,6 +37,10 @@ flowchart TD
 
 The first vertical slice provides:
 
+- canonical schemas and stable IDs for papers, Research Cards, hypotheses,
+  datasets, experiments, factors, indicators, strategies, and validation results;
+- source provenance, dataset fingerprints, immutable content digests, and an
+  append-only evidence register reconciled to the audit ledger;
 - deterministic performance metrics from R-multiple outcomes;
 - Wilson-score confidence and explicit evidence-weight calculation;
 - mandatory counter-evidence, methodology, assumptions, and risk controls;
@@ -68,7 +72,11 @@ The equivalent direct command is:
 ```bash
 PYTHONPATH=src python -m athena.cli run examples/orb_candidate.json \
   --ledger runtime/ledger.jsonl \
+  --register runtime/evidence-register.jsonl \
   --status runtime/status.json
+
+PYTHONPATH=src python -m athena.cli validate-register \
+  runtime/evidence-register.jsonl --ledger runtime/ledger.jsonl
 ```
 
 ## Decision contract
@@ -92,6 +100,7 @@ policy in `config/decision_policy.json`. Every verdict publishes:
 ```text
 src/athena/          Executable kernel and orchestration
 config/              Versioned Decision Court policy
+schemas/             Closed evidence and dataset contracts
 examples/            Synthetic reproducible research request
 tests/               Contract, metric, ledger, and end-to-end tests
 dashboard/           Read-only operational status interface
@@ -102,11 +111,13 @@ docs/                Frozen architecture and governance controls
 
 ## What exists versus what does not
 
-The kernel, audit trail, Court, scheduled runner, and status interface are real
-and executable. Market-data connectors, broker execution, portfolio allocation,
-LLM research adapters, Gmail/Drive evidence ingestion, walk-forward testing, and
-production deployment are deliberately outside this first slice. They must be
-added behind the existing contracts and may not weaken the Court.
+The kernel, evidence register, audit trail, Court, scheduled runner, and status
+interface are real and executable. The research-volume targets are not met.
+Market-data connectors, broker execution, portfolio allocation, LLM research
+adapters, Gmail/Drive evidence ingestion, walk-forward testing, and production
+deployment are deliberately outside this slice. They must be added behind the
+existing contracts and may not weaken the Court.
 
 See [architecture](docs/ARCHITECTURE.md), [governance](docs/GOVERNANCE.md), and
-the [delivery plan](docs/ROADMAP.md).
+the [evidence foundation](docs/EVIDENCE_FOUNDATION.md), and the
+[delivery plan](docs/ROADMAP.md).

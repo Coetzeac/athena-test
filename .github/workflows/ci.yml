@@ -23,6 +23,8 @@ jobs:
       - name: Validate frozen architecture and traceability
         run: athena freeze-status
       - name: Run governed example cycle
-        run: athena run examples/orb_candidate.json --ledger /tmp/athena-ledger.jsonl --status /tmp/athena-status.json
+        run: athena run examples/orb_candidate.json --ledger /tmp/athena-ledger.jsonl --register /tmp/athena-evidence-register.jsonl --status /tmp/athena-status.json
       - name: Validate audit ledger
         run: athena validate-ledger /tmp/athena-ledger.jsonl
+      - name: Reconcile evidence register and audit ledger
+        run: athena validate-register /tmp/athena-evidence-register.jsonl --ledger /tmp/athena-ledger.jsonl
