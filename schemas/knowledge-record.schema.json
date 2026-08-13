@@ -23,9 +23,11 @@
     "record_id": {"type": "string", "pattern": "^ATH-[A-Z]{3}-[0-9A-F]{24}$"},
     "record_type": {
       "enum": [
+        "author",
         "paper",
         "research_card",
         "hypothesis",
+        "formula",
         "dataset",
         "experiment",
         "factor",

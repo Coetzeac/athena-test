@@ -16,9 +16,11 @@ RECORD_ID_PATTERN = re.compile(r"^ATH-[A-Z]{3}-[0-9A-F]{24}$")
 
 
 class RecordType(StrEnum):
+    AUTHOR = "author"
     PAPER = "paper"
     RESEARCH_CARD = "research_card"
     HYPOTHESIS = "hypothesis"
+    FORMULA = "formula"
     DATASET = "dataset"
     EXPERIMENT = "experiment"
     FACTOR = "factor"
@@ -28,9 +30,11 @@ class RecordType(StrEnum):
 
 
 RECORD_SPECS: dict[RecordType, dict[str, Any]] = {
+    RecordType.AUTHOR: {"prefix": "AUT", "identity_fields": ("author_key",)},
     RecordType.PAPER: {"prefix": "PAP", "identity_fields": ("canonical_locator",)},
     RecordType.RESEARCH_CARD: {"prefix": "RSC", "identity_fields": ("source_record_ids", "version")},
     RecordType.HYPOTHESIS: {"prefix": "HYP", "identity_fields": ("hypothesis_key", "version")},
+    RecordType.FORMULA: {"prefix": "FRM", "identity_fields": ("formula_key", "version")},
     RecordType.DATASET: {"prefix": "DAT", "identity_fields": ("fingerprint_sha256",)},
     RecordType.EXPERIMENT: {"prefix": "EXP", "identity_fields": ("experiment_key", "specification_sha256")},
     RecordType.FACTOR: {"prefix": "FAC", "identity_fields": ("factor_key", "version")},
@@ -483,6 +487,10 @@ class EvidenceRegister:
                 raise RegisterIntegrityError(f"invalid register record at line {line_number}: {error}") from error
         return records
 
+    def records(self) -> tuple[KnowledgeRecord, ...]:
+        """Return validated immutable records for controlled reconciliation."""
+        return tuple(self._records())
+
     @staticmethod
     def _ledger_links(ledger: EvidenceLedger) -> dict[str, list[dict[str, Any]]]:
         links: dict[str, list[dict[str, Any]]] = {}
@@ -615,7 +623,16 @@ def validate_record_contract(
             failures.append(f"{kind.value}: identity fields differ from executable contract")
 
     schema_paths = manifest.get("schemas", {})
-    for name in ("knowledge_record", "dataset_fingerprint"):
+    required_schemas = {
+        "knowledge_record",
+        "dataset_fingerprint",
+        "research_intake",
+        "research_card",
+        "formula_extraction",
+    }
+    if set(schema_paths) != required_schemas:
+        failures.append(f"evidence schemas must be exactly: {sorted(required_schemas)}")
+    for name in sorted(required_schemas):
         schema_path = root / str(schema_paths.get(name, ""))
         if not schema_path.is_file():
             failures.append(f"missing evidence schema: {name}")

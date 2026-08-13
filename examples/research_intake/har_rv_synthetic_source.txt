@@ -1,0 +1,6 @@
+Synthetic public-safe research fixture for ATHENA intake tests.
+
+Claim: volatility persistence may be represented by daily, weekly, and monthly realised-volatility components.
+Formula: RV(t+1) = beta0 + beta1*RV_daily + beta2*RV_weekly + beta3*RV_monthly.
+
+This fixture is not an academic paper and cannot establish market edge. It exists only to exercise identity, provenance, retention, claim-linking, quarantine, and audit controls.

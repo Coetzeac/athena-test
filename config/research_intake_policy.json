@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "policy_id": "ATHENA-INTAKE-001",
+  "evidence_ids": ["EF-002", "EF-009", "EF-010"],
+  "maximum_source_bytes": 5242880,
+  "allowed_source_suffixes": [".json", ".md", ".txt"],
+  "allowed_usage_rights": ["open-access", "public-domain", "synthetic-test-only"],
+  "prohibited_usage_rights": ["unknown", "uncertain", "unverified"],
+  "required_paper_fields": ["title", "canonical_locator", "publication_date", "publisher", "authors"],
+  "required_research_card_fields": ["summary", "research_question", "method", "findings", "limitations", "assumptions", "counter_evidence", "claims", "hypotheses", "formulas"],
+  "required_claim_fields": ["claim_id", "statement", "relationship", "source_locator"],
+  "allowed_claim_relationships": ["supports", "contradicts", "context"],
+  "require_hypothesis": true,
+  "require_formula": true,
+  "require_counter_evidence": true,
+  "duplicate_rule": "A canonical locator cannot identify different bytes, and identical source bytes cannot be counted as a second paper.",
+  "live_execution": "prohibited"
+}

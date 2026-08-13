@@ -10,4 +10,5 @@ build/
 .env.*
 data/private/
 runtime/*.tmp
-
+runtime/objects/
+runtime/intake-quarantine.jsonl

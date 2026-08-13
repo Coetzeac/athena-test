@@ -10,10 +10,10 @@ or that a strategy has an edge. [EF-002, EF-010]
 
 ## Authority
 
-The controlled record families are papers, Research Cards, hypotheses,
-datasets, experiments, factors, indicators, strategies, and validation results.
-They correspond to the frozen research collections and systems-of-record model.
-[EF-002, EF-009]
+The controlled record families are authors, papers, Research Cards, hypotheses,
+formulae, datasets, experiments, factors, indicators, strategies, and validation
+results. They correspond to the frozen research collections and systems-of-
+record model. [EF-002, EF-009]
 
 `config/evidence_registers.json` is the executable Phase 0 contract. Its record
 types, stable-ID prefixes, required identity fields, schemas, ledger event, and
@@ -90,8 +90,9 @@ commit. Deleting or overwriting the adverse record is prohibited.
 
 ## Boundary and remaining deficiency
 
-This is a repository-backed Phase 0 control. It does not yet provide the frozen
-paper corpus, Research Cards, production PostgreSQL persistence, Google Drive
-reconciliation, licensed market-data ingestion, backups, or recovery evidence.
-FR-002 and FR-003 therefore advance only to `partial`; neither is implemented.
-[EF-006, EF-009]
+This is a repository-backed Phase 0 control. Controlled synthetic intake now
+proves the paper, author, Research Card, hypothesis, formula, claim-link,
+quarantine, and retained-source path. It does not provide the frozen paper
+corpus, production PostgreSQL persistence, Google Drive reconciliation,
+licensed market-data ingestion, backups, or recovery evidence. FR-002 and
+FR-003 therefore remain `partial`; neither is implemented. [EF-006, EF-009]

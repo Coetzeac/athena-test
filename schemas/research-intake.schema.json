@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/research-intake.schema.json",
+  "title": "ATHENA Research Intake Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_file", "declared_source_sha256", "usage_rights", "evidence_ids", "paper", "research_card"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "source_file": {"type": "string", "minLength": 1},
+    "declared_source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "usage_rights": {"enum": ["open-access", "public-domain", "synthetic-test-only"]},
+    "evidence_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "paper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "canonical_locator", "publication_date", "publisher", "authors", "bibliography"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "canonical_locator": {"type": "string", "minLength": 1},
+        "publication_date": {"type": "string", "minLength": 1},
+        "publisher": {"type": "string", "minLength": 1},
+        "doi": {"type": ["string", "null"]},
+        "authors": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/author"}},
+        "bibliography": {"type": "string", "minLength": 1}
+      }
+    },
+    "research_card": {"$ref": "research-card.schema.json"}
+  },
+  "$defs": {
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "orcid": {"type": ["string", "null"]},
+        "affiliation": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

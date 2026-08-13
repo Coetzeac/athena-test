@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "source_file": "har_rv_synthetic_source.txt",
+  "declared_source_sha256": "8203ea5b890f03261f4417adda27b273e76fc2dbac87e238f11b95d222e7270e",
+  "usage_rights": "synthetic-test-only",
+  "evidence_ids": ["EF-003", "E-SYNTH-RESEARCH-001"],
+  "paper": {
+    "title": "Synthetic HAR-RV intake control fixture",
+    "canonical_locator": "synthetic://athena/har-rv-intake-control-v1",
+    "publication_date": "2026-08-13",
+    "publisher": "ATHENA test fixtures",
+    "doi": null,
+    "authors": [
+      {
+        "name": "ATHENA Test Laboratory",
+        "orcid": null,
+        "affiliation": "Synthetic fixture only"
+      }
+    ],
+    "bibliography": "ATHENA Test Laboratory (2026). Synthetic HAR-RV intake control fixture. Synthetic fixture; not an academic source."
+  },
+  "research_card": {
+    "version": 1,
+    "summary": "Synthetic description of volatility persistence across daily, weekly, and monthly components.",
+    "research_question": "Can a reproducible HAR-RV proxy improve volatility-state measurement across an approved universe?",
+    "method": "Control fixture only; no empirical market test is claimed.",
+    "findings": [
+      "The fixture declares a testable multi-horizon volatility-persistence mechanism."
+    ],
+    "limitations": [
+      "The source is synthetic and cannot establish empirical validity.",
+      "No licensed market data, out-of-sample evidence, or Pine parity exists."
+    ],
+    "assumptions": [
+      "Realised-volatility inputs will be defined before implementation.",
+      "No coefficient is accepted before controlled estimation and validation."
+    ],
+    "counter_evidence": [
+      "A simple persistence model may fail during structural breaks or discontinuous volatility shocks."
+    ],
+    "claims": [
+      {
+        "claim_id": "CLM-HAR-PERSISTENCE-001",
+        "statement": "Volatility persistence may contain separable daily, weekly, and monthly components.",
+        "relationship": "context",
+        "source_locator": "har_rv_synthetic_source.txt#L3-L4"
+      }
+    ],
+    "hypotheses": [
+      {
+        "hypothesis_key": "ATH-001-HAR-RV-PERSISTENCE",
+        "version": 1,
+        "claim": "A multi-horizon realised-volatility proxy will outperform a single-horizon persistence baseline on unseen data.",
+        "mechanism": "Daily shocks and slower weekly and monthly persistence contribute distinct forecast information.",
+        "falsification": "Reject if the proxy fails the approved walk-forward, cross-market, sensitivity, or robustness gates.",
+        "claim_ids": ["CLM-HAR-PERSISTENCE-001"]
+      }
+    ],
+    "formulas": [
+      {
+        "formula_key": "ATH-001-HAR-RV-ACADEMIC",
+        "version": 1,
+        "expression": "RV(t+1) = beta0 + beta1*RV_daily + beta2*RV_weekly + beta3*RV_monthly",
+        "notation": {
+          "RV(t+1)": "next-period realised volatility",
+          "RV_daily": "daily realised-volatility component",
+          "RV_weekly": "weekly realised-volatility component",
+          "RV_monthly": "monthly realised-volatility component",
+          "beta0..beta3": "coefficients requiring controlled estimation"
+        },
+        "applicability": "Research specification only; empirical and Pine-compatible definitions remain unapproved.",
+        "assumptions": [
+          "Input windows, annualisation, sampling, and estimator definitions will be versioned."
+        ],
+        "source_locator": "har_rv_synthetic_source.txt#L3-L4",
+        "python_status": "not_implemented",
+        "pine_status": "not_implemented"
+      }
+    ]
+  }
+}

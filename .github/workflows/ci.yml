@@ -28,3 +28,7 @@ jobs:
         run: athena validate-ledger /tmp/athena-ledger.jsonl
       - name: Reconcile evidence register and audit ledger
         run: athena validate-register /tmp/athena-evidence-register.jsonl --ledger /tmp/athena-ledger.jsonl
+      - name: Run controlled research intake
+        run: athena ingest-paper examples/research_intake/har_rv_synthetic_intake.json --objects /tmp/athena-objects --register /tmp/athena-evidence-register.jsonl --quarantine /tmp/athena-intake-quarantine.jsonl --ledger /tmp/athena-ledger.jsonl
+      - name: Validate source retention, claim links, quarantine, register, and ledger
+        run: athena validate-intake --objects /tmp/athena-objects --register /tmp/athena-evidence-register.jsonl --quarantine /tmp/athena-intake-quarantine.jsonl --ledger /tmp/athena-ledger.jsonl
