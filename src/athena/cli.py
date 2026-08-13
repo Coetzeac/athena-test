@@ -6,6 +6,7 @@ from pathlib import Path
 
 from athena.evidence import EvidenceLedger
 from athena.freeze import load_freeze, validate_freeze, validate_traceability
+from athena.intake import QuarantineRegister, ResearchIntake, validate_intake_policy, validate_intake_state
 from athena.orchestrator import run_cycle
 from athena.records import EvidenceRegister, validate_record_contract
 
@@ -14,6 +15,7 @@ DEFAULT_POLICY = Path("config/decision_policy.json")
 DEFAULT_FREEZE = Path("config/engineering_freeze.json")
 DEFAULT_TRACEABILITY = Path("config/freeze_traceability.json")
 DEFAULT_EVIDENCE_CONTRACT = Path("config/evidence_registers.json")
+DEFAULT_INTAKE_POLICY = Path("config/research_intake_policy.json")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -37,10 +39,28 @@ def build_parser() -> argparse.ArgumentParser:
     validate_register.add_argument("register", type=Path)
     validate_register.add_argument("--ledger", type=Path)
 
+    ingest = subcommands.add_parser("ingest-paper", help="ingest one controlled paper and Research Card")
+    ingest.add_argument("manifest", type=Path)
+    ingest.add_argument("--policy", type=Path, default=DEFAULT_INTAKE_POLICY)
+    ingest.add_argument("--objects", type=Path, default=Path("runtime/objects"))
+    ingest.add_argument("--register", type=Path, default=Path("runtime/evidence-register.jsonl"))
+    ingest.add_argument("--quarantine", type=Path, default=Path("runtime/intake-quarantine.jsonl"))
+    ingest.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
+
+    validate_intake = subcommands.add_parser(
+        "validate-intake",
+        help="validate retained sources, claim links, quarantine, register, and ledger",
+    )
+    validate_intake.add_argument("--objects", type=Path, default=Path("runtime/objects"))
+    validate_intake.add_argument("--register", type=Path, default=Path("runtime/evidence-register.jsonl"))
+    validate_intake.add_argument("--quarantine", type=Path, default=Path("runtime/intake-quarantine.jsonl"))
+    validate_intake.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
+
     freeze = subcommands.add_parser("freeze-status", help="validate the engineering freeze and implementation mapping")
     freeze.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
     freeze.add_argument("--traceability", type=Path, default=DEFAULT_TRACEABILITY)
     freeze.add_argument("--evidence-contract", type=Path, default=DEFAULT_EVIDENCE_CONTRACT)
+    freeze.add_argument("--intake-policy", type=Path, default=DEFAULT_INTAKE_POLICY)
     freeze.add_argument("--repository-root", type=Path, default=Path("."))
     return parser
 
@@ -65,16 +85,39 @@ def main(argv: list[str] | None = None) -> int:
         ledger = EvidenceLedger(args.ledger) if args.ledger else None
         print(json.dumps(EvidenceRegister(args.register).validate(ledger), indent=2))
         return 0
+    if args.command == "ingest-paper":
+        ledger = EvidenceLedger(args.ledger)
+        result = ResearchIntake.from_policy_file(args.policy).ingest(
+            args.manifest,
+            objects_root=args.objects,
+            register=EvidenceRegister(args.register),
+            quarantine=QuarantineRegister(args.quarantine),
+            ledger=ledger,
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] in {"ACCEPTED", "DUPLICATE"} else 2
+    if args.command == "validate-intake":
+        ledger = EvidenceLedger(args.ledger)
+        result = validate_intake_state(
+            objects_root=args.objects,
+            register=EvidenceRegister(args.register),
+            quarantine=QuarantineRegister(args.quarantine),
+            ledger=ledger,
+        )
+        print(json.dumps(result, indent=2))
+        return 0
     if args.command == "freeze-status":
         freeze = load_freeze(args.freeze)
         freeze_status = validate_freeze(freeze)
         traceability = json.loads(args.traceability.read_text(encoding="utf-8"))
         traceability_status = validate_traceability(freeze, traceability, args.repository_root)
         evidence_status = validate_record_contract(args.evidence_contract, args.repository_root)
+        intake_status = validate_intake_policy(args.intake_policy)
         print(json.dumps({
             "freeze": freeze_status,
             "traceability": traceability_status,
             "evidence_foundation": evidence_status,
+            "research_intake": intake_status,
         }, indent=2))
         return 0
     raise AssertionError("unreachable command")

@@ -19,12 +19,17 @@
   },
   "schemas": {
     "knowledge_record": "schemas/knowledge-record.schema.json",
-    "dataset_fingerprint": "schemas/dataset-fingerprint.schema.json"
+    "dataset_fingerprint": "schemas/dataset-fingerprint.schema.json",
+    "research_intake": "schemas/research-intake.schema.json",
+    "research_card": "schemas/research-card.schema.json",
+    "formula_extraction": "schemas/formula-extraction.schema.json"
   },
   "record_types": [
+    {"record_type": "author", "prefix": "AUT", "required_identity_fields": ["author_key"]},
     {"record_type": "paper", "prefix": "PAP", "required_identity_fields": ["canonical_locator"]},
     {"record_type": "research_card", "prefix": "RSC", "required_identity_fields": ["source_record_ids", "version"]},
     {"record_type": "hypothesis", "prefix": "HYP", "required_identity_fields": ["hypothesis_key", "version"]},
+    {"record_type": "formula", "prefix": "FRM", "required_identity_fields": ["formula_key", "version"]},
     {"record_type": "dataset", "prefix": "DAT", "required_identity_fields": ["fingerprint_sha256"]},
     {"record_type": "experiment", "prefix": "EXP", "required_identity_fields": ["experiment_key", "specification_sha256"]},
     {"record_type": "factor", "prefix": "FAC", "required_identity_fields": ["factor_key", "version"]},

@@ -8,6 +8,8 @@ register. Phase labels do not override a frozen requirement or acceptance gate.
 - Evidence identity contract and tamper-evident ledger.
 - Repository-backed knowledge records, provenance, dataset fingerprints, and
   register-to-ledger reconciliation.
+- Controlled paper and Research Card intake with source retention, author and
+  formula records, claim links, duplicate detection, and quarantine.
 - Deterministic performance evaluation.
 - Adversarial challenge and risk fields.
 - Versioned Decision Court gates.

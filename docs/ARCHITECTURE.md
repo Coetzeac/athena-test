@@ -63,12 +63,18 @@ An evidence reference has a stable ID, source class, locator, observed time, and
 SHA-256 digest. The digest proves content identity only when the referenced bytes
 are retained and independently retrievable.
 
-The executable evidence foundation adds controlled record contracts for papers,
-Research Cards, hypotheses, datasets, experiments, factors, indicators,
-strategies, and validation results. Stable IDs are derived from canonical
+The executable evidence foundation adds controlled record contracts for authors,
+papers, Research Cards, hypotheses, formulae, datasets, experiments, factors,
+indicators, strategies, and validation results. Stable IDs are derived from canonical
 identity fields, while separate content, provenance, record, and dataset
 fingerprint digests expose silent mutation. Every appended record must reconcile
 to one hash-chained `evidence_record_registered` event. [EF-002, EF-009, EF-010]
+
+Controlled intake retains eligible source bytes in content-addressed storage,
+links claims to Paper records and exact source locators, records bibliography and
+authors, and quarantines failed rights, completeness, digest, duplicate, or
+support checks. A quarantined source cannot enter the Court pipeline. [EF-009,
+EF-010]
 
 A research request states the claim, mechanism, recommendation, instrument,
 timeframe, outcomes, evidence references, counter-evidence, assumptions,

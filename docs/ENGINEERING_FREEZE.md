@@ -14,6 +14,13 @@ It implements stable record identity, provenance, dataset fingerprints, and
 register-ledger reconciliation without claiming that the research corpus or
 production systems of record are complete. [EF-002, EF-009, EF-010]
 
+The controlled intake increment is governed by
+`config/research_intake_policy.json` and [RESEARCH_INTAKE.md](RESEARCH_INTAKE.md).
+It retains eligible source bytes, registers bibliography and authors, links
+claims to evidence, extracts proposed hypotheses and formulae, detects
+duplicates, and quarantines failed sources. The public fixture is synthetic and
+does not count as empirical research evidence. [EF-002, EF-009, EF-010]
+
 The recovered evidence register is deliberately honest about its limit: the
 public repository does not contain a complete export of the original Project
 conversation. Requirements recovered from the indexed history are integrated.
