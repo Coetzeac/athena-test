@@ -1,4 +1,4 @@
-.PHONY: test freeze demo demo-market-data plan-market-history validate-runtime dashboard
+.PHONY: test freeze demo demo-market-data plan-market-history prove-runtime-recovery validate-runtime dashboard
 
 test:
 	PYTHONPATH=src python -m unittest discover -s tests -v
@@ -15,6 +15,10 @@ demo-market-data:
 
 plan-market-history:
 	PYTHONPATH=src python -m athena.cli plan-market-history --end 2026-08-13 --manifest-root runtime/market-data/history-control
+
+prove-runtime-recovery:
+	PYTHONPATH=src python -m athena.cli validate-runtime-persistence
+	PYTHONPATH=src python -m athena.cli prove-runtime-recovery examples/recovery/synthetic_runtime_backup.json --store-root runtime/recovery-proof
 
 validate-runtime:
 	PYTHONPATH=src python -m athena.cli validate-ledger runtime/ledger.jsonl

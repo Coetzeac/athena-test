@@ -128,11 +128,13 @@ policy, synthetic end-to-end path, byte retention, Dataset registration,
 deterministic planning, quota enforcement, resumable checkpoints, quarantine,
 completeness reports, and validation. They do not prove that the complete
 approved provider history for all eight instruments and five intervals has been
-acquired or retained in durable private storage. They do not implement
+acquired or retained in deployed durable private storage. `ATHENA-RPR-001`
+defines and tests the required persistence contracts but does not supply the
+production endpoints or observed recovery evidence. They do not implement
 normalized 0–100 market features, ATH-001, walk-forward testing, Monte Carlo,
 cross-market robustness, Python/Pine parity, TradingView ingestion, or paper
 trading.
 
 `FR-005` remains `partial`; it is not implemented.
 `FR-006`, `FR-007`, and `FR-014` do not advance. Live execution remains
-prohibited. [EF-002, EF-003, EF-010, EF-014]
+prohibited. [EF-002, EF-003, EF-010, EF-014, EF-015]

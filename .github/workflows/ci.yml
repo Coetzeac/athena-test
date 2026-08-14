@@ -38,3 +38,7 @@ jobs:
         run: athena validate-market-data --objects /tmp/athena-market-data-objects --register /tmp/athena-evidence-register.jsonl --quarantine /tmp/athena-market-data-quarantine.jsonl --ledger /tmp/athena-ledger.jsonl
       - name: Build an immutable bounded historical-acquisition manifest
         run: athena plan-market-history --start 2020-01-01 --end 2020-01-02 --symbol BTC/USD --interval 1day --manifest-root /tmp/athena-history-control
+      - name: Validate runtime-persistence contracts and recovery objectives
+        run: athena validate-runtime-persistence
+      - name: Prove synthetic byte-for-byte backup and restore
+        run: athena prove-runtime-recovery examples/recovery/synthetic_runtime_backup.json --store-root /tmp/athena-recovery-proof

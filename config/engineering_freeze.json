@@ -94,6 +94,12 @@
       "observed_at": "2026-08-14",
       "authority": "user_approval",
       "record": "ATHENA Market Data Resolution 1 approves Twelve Data Basic for internal non-commercial research; EUR/USD, GBP/USD, USD/JPY, SPY, QQQ, GLD, BTC/USD, and ETH/USD; 5-minute, 15-minute, 1-hour, 4-hour, and daily bars; daily history from 2010 or inception and intraday history from 2020; UTC normalization with retained source metadata; content fingerprints and fail-closed quarantine; a USD 0 initial budget and no upgrade above USD 79 per month without separate evidence and approval; no redistribution and no live execution."
+    },
+    {
+      "evidence_id": "EF-015",
+      "observed_at": "2026-08-14",
+      "authority": "user_approval",
+      "record": "ATHENA Runtime Persistence Resolution 1 approves PostgreSQL as canonical operational state, private S3-compatible content-addressed object storage for immutable runtime bytes, Redis for transient coordination only, encrypted off-site backups, a 60-minute RPO, a 240-minute RTO, closed schemas, migrations, integrity and restore tests, Docker development infrastructure, no repository credentials, no production-readiness claim without observed restore evidence, and no live execution."
     }
   ],
   "mission": {
@@ -236,6 +242,22 @@
     "live_execution": "prohibited",
     "evidence_ids": ["EF-002", "EF-006", "EF-010", "EF-014"]
   },
+  "approved_runtime_persistence": {
+    "resolution_id": "ATHENA-RPR-001",
+    "postgresql_authority": "canonical operational state",
+    "object_store_interface": "S3-compatible",
+    "object_store_authority": "immutable runtime bytes",
+    "redis_authority": "transient coordination only",
+    "redis_canonical_records_permitted": false,
+    "recovery_point_objective_minutes": 60,
+    "recovery_time_objective_minutes": 240,
+    "offsite_separate_failure_domain_required": true,
+    "encrypted_backup_required": true,
+    "production_acceptance_requires_observed_restore": true,
+    "production_ready": false,
+    "live_execution": "prohibited",
+    "evidence_ids": ["EF-002", "EF-006", "EF-015"]
+  },
   "experiment_queue": [
     {"experiment_id": "ATH-001", "name": "HAR-RV Proxy", "status": "first controlled experiment"},
     {"experiment_id": "ATH-002", "name": "ATR Percentile", "status": "queued"},
@@ -363,7 +385,7 @@
     "Numeric walk-forward, Monte Carlo, sensitivity, and robustness parameters",
     "Production position, portfolio, daily-loss, and kill-switch limits",
     "VPS provider, domain, and deployment credentials",
-    "Service-level objectives, recovery-point objective, and recovery-time objective",
+    "Service-level objectives beyond the approved 60-minute RPO and 240-minute RTO",
     "Monthly GPT, storage, and infrastructure budgets and any market-data spend above the separately approved cap",
     "Complete source conversation export for line-by-line reconciliation"
   ]

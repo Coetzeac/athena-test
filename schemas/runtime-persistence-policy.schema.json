@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/runtime-persistence-policy.schema.json",
+  "title": "ATHENA runtime persistence policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "resolution_id", "status", "approved_at", "authority", "evidence_ids", "requirements", "stores", "recovery", "secrets", "production_ready", "decision_court_bypass", "live_execution"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "resolution_id": {"const": "ATHENA-RPR-001"},
+    "status": {"const": "approved_implementation_control"},
+    "approved_at": {"type": "string", "format": "date"},
+    "authority": {"const": "Owner/CIO"},
+    "evidence_ids": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "^EF-[0-9]{3}$"}},
+    "requirements": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "pattern": "^FR-[0-9]{3}$"}},
+    "stores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["postgresql", "object_store", "redis"],
+      "properties": {
+        "postgresql": {"type": "object", "additionalProperties": false, "required": ["authority", "schema", "minimum_major_version", "tls_at_external_boundary", "migration_sha256", "canonical_collections"], "properties": {"authority": {"const": "canonical_operational_state"}, "schema": {"const": "athena"}, "minimum_major_version": {"type": "integer", "minimum": 16}, "tls_at_external_boundary": {"const": true}, "migration_sha256": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["filename", "sha256"], "properties": {"filename": {"type": "string", "pattern": "^[0-9]{4}_[a-z0-9_]+\\.sql$"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}}, "canonical_collections": {"type": "array", "minItems": 9, "uniqueItems": true, "items": {"type": "string"}}}},
+        "object_store": {"type": "object", "additionalProperties": false, "required": ["authority", "interface", "bucket_environment_variable", "endpoint_environment_variable", "content_addressed", "versioning_required", "public_access", "server_side_encryption", "tls_at_external_boundary", "canonical_kinds"], "properties": {"authority": {"const": "immutable_runtime_bytes"}, "interface": {"const": "S3-compatible"}, "bucket_environment_variable": {"const": "ATHENA_OBJECT_BUCKET"}, "endpoint_environment_variable": {"const": "ATHENA_S3_ENDPOINT_URL"}, "content_addressed": {"const": true}, "versioning_required": {"const": true}, "public_access": {"const": false}, "server_side_encryption": {"const": "AES256"}, "tls_at_external_boundary": {"const": true}, "canonical_kinds": {"type": "array", "minItems": 8, "uniqueItems": true, "items": {"type": "string"}}}},
+        "redis": {"type": "object", "additionalProperties": false, "required": ["authority", "canonical_record_permitted", "maximum_ttl_seconds", "maximum_payload_bytes", "tls_at_external_boundary"], "properties": {"authority": {"const": "transient_coordination_only"}, "canonical_record_permitted": {"const": false}, "maximum_ttl_seconds": {"type": "integer", "minimum": 1, "maximum": 86400}, "maximum_payload_bytes": {"type": "integer", "minimum": 1, "maximum": 65536}, "tls_at_external_boundary": {"const": true}}}
+      }
+    },
+    "recovery": {"type": "object", "additionalProperties": false, "required": ["recovery_point_objective_minutes", "recovery_time_objective_minutes", "offsite_separate_failure_domain_required", "encrypted_backup_required", "backup_retention_days", "restore_test_cadence_days", "production_acceptance_requires_observed_restore"], "properties": {"recovery_point_objective_minutes": {"const": 60}, "recovery_time_objective_minutes": {"const": 240}, "offsite_separate_failure_domain_required": {"const": true}, "encrypted_backup_required": {"const": true}, "backup_retention_days": {"type": "integer", "minimum": 35}, "restore_test_cadence_days": {"type": "integer", "maximum": 30}, "production_acceptance_requires_observed_restore": {"const": true}}},
+    "secrets": {"type": "object", "additionalProperties": false, "required": ["permitted_source", "repository_values_prohibited", "required_environment_variables"], "properties": {"permitted_source": {"const": "runtime_environment_or_secret_store"}, "repository_values_prohibited": {"const": true}, "required_environment_variables": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string", "pattern": "^ATHENA_[A-Z0-9_]+$"}}}},
+    "production_ready": {"const": false},
+    "decision_court_bypass": {"const": "prohibited"},
+    "live_execution": {"const": "prohibited"}
+  }
+}

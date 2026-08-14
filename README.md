@@ -50,6 +50,9 @@ The first vertical slice provides:
 - a deterministic historical-acquisition controller with immutable manifests,
   recorded quota reservations, resumable terminal checkpoints, coverage gates,
   and content-addressed completeness reports;
+- approved runtime-persistence contracts with PostgreSQL migrations,
+  versioned encrypted S3-compatible object references, bounded transient Redis
+  coordination, and a synthetic byte-for-byte recovery proof;
 - deterministic performance metrics from R-multiple outcomes;
 - Wilson-score confidence and explicit evidence-weight calculation;
 - mandatory counter-evidence, methodology, assumptions, and risk controls;
@@ -63,7 +66,9 @@ The first vertical slice provides:
 
 ## Run it
 
-Python 3.11 or later is the only runtime dependency.
+The base kernel and contract tests require Python 3.11 or later with no external
+service dependency. Deployed persistence adapters use the pinned optional
+`persistence` dependency group; development services require Docker.
 
 ```bash
 make test
@@ -117,6 +122,12 @@ PYTHONPATH=src python -m athena.cli validate-market-data \
 PYTHONPATH=src python -m athena.cli plan-market-history \
   --end 2026-08-13 \
   --manifest-root runtime/market-data/history-control
+
+PYTHONPATH=src python -m athena.cli validate-runtime-persistence
+
+PYTHONPATH=src python -m athena.cli prove-runtime-recovery \
+  examples/recovery/synthetic_runtime_backup.json \
+  --store-root runtime/recovery-proof
 ```
 
 Real approved retrieval uses `athena ingest-market-data` and reads the API key
@@ -124,7 +135,10 @@ only from `TWELVE_DATA_API_KEY`. Provider data is internal runtime material and
 must not be committed to this public repository. [EF-014]
 Historical execution additionally requires durable private object storage and
 canonical persistent checkpoint, quota, report, register, and ledger paths.
-Ephemeral CI storage cannot prove resumability or evidence retention.
+Ephemeral CI storage cannot prove resumability or evidence retention. The
+runtime-persistence increment supplies approved contracts and a synthetic
+recovery proof; production endpoints, off-site backups, and observed timed
+restores remain external acceptance evidence. [EF-015]
 
 ## Decision contract
 
@@ -146,9 +160,11 @@ policy in `config/decision_policy.json`. Every verdict publishes:
 
 ```text
 src/athena/          Executable kernel and orchestration
-config/              Versioned Decision Court policy
-schemas/             Closed evidence, dataset, intake, card, formula, and market-data contracts
-examples/            Synthetic reproducible research, intake, and market-data requests
+config/              Versioned Decision Court and protected implementation policies
+schemas/             Closed evidence, data, intake, recovery, and persistence contracts
+migrations/          Ordered digest-controlled PostgreSQL migrations
+deploy/              Isolated non-production Docker development infrastructure
+examples/            Synthetic reproducible research, intake, market-data, and recovery inputs
 tests/               Contract, metric, ledger, and end-to-end tests
 dashboard/           Read-only operational status interface
 runtime/             Machine-readable ledger and latest status
@@ -159,8 +175,8 @@ docs/                Frozen architecture and governance controls
 ## What exists versus what does not
 
 The kernel, controlled synthetic research intake, approved market-data adapter,
-historical-acquisition control plane, evidence register, audit trail, Court,
-scheduled runner, and status interface are real and executable. The complete
+historical-acquisition and runtime-persistence control planes, evidence register,
+audit trail, Court, scheduled runner, and status interface are real and executable. The complete
 approved market history and research-volume targets are not met. Normalized
 market features, broker execution, portfolio allocation, LLM research
 adapters, Gmail/Drive evidence ingestion, walk-forward testing, and production
@@ -172,4 +188,5 @@ the [evidence foundation](docs/EVIDENCE_FOUNDATION.md), the
 [research intake](docs/RESEARCH_INTAKE.md), and the [delivery plan](docs/ROADMAP.md).
 The market-data authority and control path are documented in
 [controlled market-data intake](docs/MARKET_DATA.md) and
-[historical acquisition](docs/HISTORICAL_ACQUISITION.md).
+[historical acquisition](docs/HISTORICAL_ACQUISITION.md), and the persistence
+authority is documented in [runtime persistence](docs/RUNTIME_PERSISTENCE.md).

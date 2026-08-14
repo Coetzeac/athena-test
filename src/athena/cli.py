@@ -27,6 +27,12 @@ from athena.market_data import (
 )
 from athena.models import utc_now
 from athena.orchestrator import run_cycle
+from athena.persistence import (
+    FilesystemProofStore,
+    RecoveryController,
+    RuntimePersistencePolicy,
+    validate_runtime_persistence_policy,
+)
 from athena.records import EvidenceRegister, validate_record_contract
 
 
@@ -37,6 +43,7 @@ DEFAULT_EVIDENCE_CONTRACT = Path("config/evidence_registers.json")
 DEFAULT_INTAKE_POLICY = Path("config/research_intake_policy.json")
 DEFAULT_MARKET_DATA_POLICY = Path("config/market_data_policy.json")
 DEFAULT_HISTORY_POLICY = Path("config/historical_acquisition_policy.json")
+DEFAULT_PERSISTENCE_POLICY = Path("config/runtime_persistence_policy.json")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -207,6 +214,26 @@ def build_parser() -> argparse.ArgumentParser:
     )
     validate_history.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
 
+    validate_persistence = subcommands.add_parser(
+        "validate-runtime-persistence",
+        help="validate the approved PostgreSQL, S3-compatible, Redis, and recovery contracts",
+    )
+    validate_persistence.add_argument(
+        "--policy",
+        type=Path,
+        default=DEFAULT_PERSISTENCE_POLICY,
+    )
+    validate_persistence.add_argument("--repository-root", type=Path, default=Path("."))
+
+    prove_recovery = subcommands.add_parser(
+        "prove-runtime-recovery",
+        help="run a synthetic content-addressed backup and restore control proof",
+    )
+    prove_recovery.add_argument("source", type=Path)
+    prove_recovery.add_argument("--policy", type=Path, default=DEFAULT_PERSISTENCE_POLICY)
+    prove_recovery.add_argument("--store-root", type=Path, required=True)
+    prove_recovery.add_argument("--component", default="synthetic_runtime_state")
+
     freeze = subcommands.add_parser("freeze-status", help="validate the engineering freeze and implementation mapping")
     freeze.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
     freeze.add_argument("--traceability", type=Path, default=DEFAULT_TRACEABILITY)
@@ -214,6 +241,7 @@ def build_parser() -> argparse.ArgumentParser:
     freeze.add_argument("--intake-policy", type=Path, default=DEFAULT_INTAKE_POLICY)
     freeze.add_argument("--market-data-policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
     freeze.add_argument("--history-policy", type=Path, default=DEFAULT_HISTORY_POLICY)
+    freeze.add_argument("--persistence-policy", type=Path, default=DEFAULT_PERSISTENCE_POLICY)
     freeze.add_argument("--repository-root", type=Path, default=Path("."))
     return parser
 
@@ -368,6 +396,21 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(json.dumps(result, indent=2))
         return 0
+    if args.command == "validate-runtime-persistence":
+        result = validate_runtime_persistence_policy(args.policy, args.repository_root)
+        print(json.dumps(result, indent=2))
+        return 0
+    if args.command == "prove-runtime-recovery":
+        source = args.source.read_bytes()
+        if not source:
+            raise ValueError("synthetic recovery source cannot be empty")
+        policy = RuntimePersistencePolicy.from_file(args.policy)
+        result = RecoveryController(
+            policy,
+            FilesystemProofStore(args.store_root),
+        ).prove_synthetic_round_trip(args.component, source)
+        print(json.dumps(result, indent=2))
+        return 0
     if args.command == "freeze-status":
         freeze = load_freeze(args.freeze)
         freeze_status = validate_freeze(freeze)
@@ -377,6 +420,10 @@ def main(argv: list[str] | None = None) -> int:
         intake_status = validate_intake_policy(args.intake_policy)
         market_data_status = validate_market_data_policy(args.market_data_policy, args.repository_root)
         history_status = validate_historical_policy(args.history_policy, args.repository_root)
+        persistence_status = validate_runtime_persistence_policy(
+            args.persistence_policy,
+            args.repository_root,
+        )
         print(json.dumps({
             "freeze": freeze_status,
             "traceability": traceability_status,
@@ -384,6 +431,7 @@ def main(argv: list[str] | None = None) -> int:
             "research_intake": intake_status,
             "market_data": market_data_status,
             "historical_acquisition": history_status,
+            "runtime_persistence": persistence_status,
         }, indent=2))
         return 0
     raise AssertionError("unreachable command")

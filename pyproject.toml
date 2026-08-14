@@ -12,6 +12,13 @@ license = {text = "Proprietary"}
 authors = [{name = "Antonie Coetzee"}]
 dependencies = []
 
+[project.optional-dependencies]
+persistence = [
+  "boto3==1.43.72",
+  "psycopg[binary]==3.3.4",
+  "redis==8.1.0",
+]
+
 [project.scripts]
 athena = "athena.cli:main"
 
@@ -20,4 +27,3 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

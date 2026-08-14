@@ -97,7 +97,10 @@ Dataset fingerprint, byte-retention, quarantine, and ledger path with a syntheti
 fixture. The historical control plane additionally proves immutable planning,
 quota reservations, restart checkpoints, coverage gates, and completeness-report
 integrity with synthetic tests; real provider history remains internal and is
-not committed. It does not provide the frozen paper corpus, complete approved market history,
-production PostgreSQL persistence, Google Drive reconciliation, backups, or
-recovery evidence. FR-002, FR-003, and FR-005 therefore remain `partial`; none is
-implemented. [EF-006, EF-009, EF-014]
+not committed. The approved persistence increment proves closed store mappings,
+PostgreSQL migrations, immutable S3-compatible object references, Redis
+boundaries, and a synthetic byte-for-byte restore. It does not provide the
+frozen paper corpus, complete approved market history, deployed PostgreSQL,
+private off-site storage, Google Drive reconciliation, or observed production
+RPO/RTO evidence. FR-002, FR-003, FR-005, and FR-011 therefore remain `partial`;
+none is implemented. [EF-006, EF-009, EF-014, EF-015]
