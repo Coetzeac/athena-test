@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/historical-completeness-report.schema.json",
+  "title": "ATHENA Historical Completeness Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "manifest_id",
+    "manifest_sha256",
+    "status",
+    "scope",
+    "planned_windows",
+    "completed_windows",
+    "quarantined_windows",
+    "pending_windows",
+    "completion_percent",
+    "scope_complete",
+    "full_approved_history_complete",
+    "market_data_state_validated",
+    "ready_for_research",
+    "pause_reason",
+    "checkpoint_terminal_hash",
+    "quota_terminal_hash",
+    "scope_status",
+    "decision_court_submission",
+    "live_execution",
+    "report_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "manifest_id": {"type": "string", "pattern": "^ATH-HIST-[0-9A-F]{24}$"},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "status": {"enum": ["IN_PROGRESS", "PAUSED_QUOTA", "BLOCKED_QUARANTINE", "COMPLETE"]},
+    "scope": {"enum": ["FULL_APPROVED_HISTORY", "BOUNDED_APPROVED_SCOPE"]},
+    "planned_windows": {"type": "integer", "minimum": 1},
+    "completed_windows": {"type": "integer", "minimum": 0},
+    "quarantined_windows": {"type": "integer", "minimum": 0},
+    "pending_windows": {"type": "integer", "minimum": 0},
+    "completion_percent": {"type": "string", "pattern": "^[0-9]+\\.[0-9]{6}$"},
+    "scope_complete": {"type": "boolean"},
+    "full_approved_history_complete": {"type": "boolean"},
+    "market_data_state_validated": {"type": "boolean"},
+    "ready_for_research": {"type": "boolean"},
+    "pause_reason": {"type": ["string", "null"]},
+    "checkpoint_terminal_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "quota_terminal_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scope_status": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "symbol",
+          "interval",
+          "planned_windows",
+          "completed_windows",
+          "quarantined_windows",
+          "pending_windows"
+        ],
+        "properties": {
+          "symbol": {"type": "string", "minLength": 1},
+          "interval": {"type": "string", "minLength": 1},
+          "planned_windows": {"type": "integer", "minimum": 1},
+          "completed_windows": {"type": "integer", "minimum": 0},
+          "quarantined_windows": {"type": "integer", "minimum": 0},
+          "pending_windows": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "decision_court_submission": {"const": "NOT_AUTHORIZED_BY_DATA_ACQUISITION"},
+    "live_execution": {"const": "prohibited"},
+    "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -152,6 +152,8 @@
         "require_unique_timestamps",
         "require_positive_ohlc",
         "require_ohlc_range_consistency",
+        "noncrypto_session_date_coverage_target_percent",
+        "maximum_noncrypto_boundary_missing_sessions",
         "unexpected_in_session_gap_action",
         "provider_output_cap_action",
         "fabricate_missing_bars"
@@ -162,6 +164,8 @@
         "require_unique_timestamps": {"const": true},
         "require_positive_ohlc": {"const": true},
         "require_ohlc_range_consistency": {"const": true},
+        "noncrypto_session_date_coverage_target_percent": {"const": 95},
+        "maximum_noncrypto_boundary_missing_sessions": {"const": 2},
         "unexpected_in_session_gap_action": {"const": "quarantine"},
         "provider_output_cap_action": {"const": "quarantine_and_partition"},
         "fabricate_missing_bars": {"const": false}

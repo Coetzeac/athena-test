@@ -6,6 +6,15 @@ from pathlib import Path
 
 from athena.evidence import EvidenceLedger
 from athena.freeze import load_freeze, validate_freeze, validate_traceability
+from athena.history import (
+    HistoricalAcquisitionCoordinator,
+    HistoricalAcquisitionPolicy,
+    HistoricalCheckpointRegister,
+    HistoricalManifest,
+    MarketDataQuotaLedger,
+    validate_historical_policy,
+    validate_historical_state,
+)
 from athena.intake import QuarantineRegister, ResearchIntake, validate_intake_policy, validate_intake_state
 from athena.market_data import (
     MarketDataIntake,
@@ -16,6 +25,7 @@ from athena.market_data import (
     validate_market_data_policy,
     validate_market_data_state,
 )
+from athena.models import utc_now
 from athena.orchestrator import run_cycle
 from athena.records import EvidenceRegister, validate_record_contract
 
@@ -26,6 +36,7 @@ DEFAULT_TRACEABILITY = Path("config/freeze_traceability.json")
 DEFAULT_EVIDENCE_CONTRACT = Path("config/evidence_registers.json")
 DEFAULT_INTAKE_POLICY = Path("config/research_intake_policy.json")
 DEFAULT_MARKET_DATA_POLICY = Path("config/market_data_policy.json")
+DEFAULT_HISTORY_POLICY = Path("config/historical_acquisition_policy.json")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -117,12 +128,92 @@ def build_parser() -> argparse.ArgumentParser:
     )
     validate_market.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
 
+    plan_history = subcommands.add_parser(
+        "plan-market-history",
+        help="write an immutable partitioned manifest for approved historical market data",
+    )
+    plan_history.add_argument("--end", required=True)
+    plan_history.add_argument("--start")
+    plan_history.add_argument("--symbol", action="append", dest="symbols")
+    plan_history.add_argument("--interval", action="append", dest="intervals")
+    plan_history.add_argument("--policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
+    plan_history.add_argument("--history-policy", type=Path, default=DEFAULT_HISTORY_POLICY)
+    plan_history.add_argument(
+        "--manifest-root",
+        type=Path,
+        default=Path("runtime/market-data/history-control"),
+    )
+
+    acquire_history = subcommands.add_parser(
+        "acquire-market-history",
+        help="resume one immutable historical manifest within recorded quota limits",
+    )
+    acquire_history.add_argument("manifest", type=Path)
+    acquire_history.add_argument("--max-credits", type=int)
+    acquire_history.add_argument("--policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
+    acquire_history.add_argument("--history-policy", type=Path, default=DEFAULT_HISTORY_POLICY)
+    acquire_history.add_argument("--objects", type=Path, default=Path("runtime/market-data/objects"))
+    acquire_history.add_argument(
+        "--reports-root",
+        type=Path,
+        default=Path("runtime/market-data/history-control"),
+    )
+    acquire_history.add_argument("--register", type=Path, default=Path("runtime/evidence-register.jsonl"))
+    acquire_history.add_argument(
+        "--quarantine",
+        type=Path,
+        default=Path("runtime/market-data-quarantine.jsonl"),
+    )
+    acquire_history.add_argument(
+        "--checkpoints",
+        type=Path,
+        default=Path("runtime/market-data/history-checkpoints.jsonl"),
+    )
+    acquire_history.add_argument(
+        "--quota-ledger",
+        type=Path,
+        default=Path("runtime/market-data/quota-ledger.jsonl"),
+    )
+    acquire_history.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
+
+    validate_history = subcommands.add_parser(
+        "validate-market-history",
+        help="validate manifest, checkpoints, quotas, reports, and ledger reconciliation",
+    )
+    validate_history.add_argument("manifest", type=Path)
+    validate_history.add_argument("--policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
+    validate_history.add_argument("--history-policy", type=Path, default=DEFAULT_HISTORY_POLICY)
+    validate_history.add_argument(
+        "--reports-root",
+        type=Path,
+        default=Path("runtime/market-data/history-control"),
+    )
+    validate_history.add_argument("--objects", type=Path, default=Path("runtime/market-data/objects"))
+    validate_history.add_argument("--register", type=Path, default=Path("runtime/evidence-register.jsonl"))
+    validate_history.add_argument(
+        "--quarantine",
+        type=Path,
+        default=Path("runtime/market-data-quarantine.jsonl"),
+    )
+    validate_history.add_argument(
+        "--checkpoints",
+        type=Path,
+        default=Path("runtime/market-data/history-checkpoints.jsonl"),
+    )
+    validate_history.add_argument(
+        "--quota-ledger",
+        type=Path,
+        default=Path("runtime/market-data/quota-ledger.jsonl"),
+    )
+    validate_history.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
+
     freeze = subcommands.add_parser("freeze-status", help="validate the engineering freeze and implementation mapping")
     freeze.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
     freeze.add_argument("--traceability", type=Path, default=DEFAULT_TRACEABILITY)
     freeze.add_argument("--evidence-contract", type=Path, default=DEFAULT_EVIDENCE_CONTRACT)
     freeze.add_argument("--intake-policy", type=Path, default=DEFAULT_INTAKE_POLICY)
     freeze.add_argument("--market-data-policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
+    freeze.add_argument("--history-policy", type=Path, default=DEFAULT_HISTORY_POLICY)
     freeze.add_argument("--repository-root", type=Path, default=Path("."))
     return parser
 
@@ -217,6 +308,66 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(json.dumps(result, indent=2))
         return 0
+    if args.command == "plan-market-history":
+        market_policy = MarketDataPolicy.from_file(args.policy)
+        history_policy = HistoricalAcquisitionPolicy.from_file(args.history_policy)
+        manifest = HistoricalManifest.create(
+            market_policy,
+            history_policy,
+            requested_end=args.end,
+            created_at=utc_now(),
+            symbols=tuple(args.symbols) if args.symbols else None,
+            intervals=tuple(args.intervals) if args.intervals else None,
+            start_override=args.start,
+        )
+        relative = manifest.write(args.manifest_root)
+        print(json.dumps({
+            "manifest_id": manifest.manifest_id,
+            "manifest_sha256": manifest.manifest_sha256,
+            "manifest_path": str(args.manifest_root / relative),
+            "scope": manifest.scope,
+            "total_windows": manifest.total_windows,
+            "planned_api_credits": manifest.planned_api_credits,
+            "live_execution": "prohibited",
+        }, indent=2))
+        return 0
+    if args.command == "acquire-market-history":
+        market_policy = MarketDataPolicy.from_file(args.policy)
+        history_policy = HistoricalAcquisitionPolicy.from_file(args.history_policy)
+        manifest = HistoricalManifest.from_file(args.manifest, market_policy, history_policy)
+        ledger = EvidenceLedger(args.ledger)
+        result = HistoricalAcquisitionCoordinator(market_policy, history_policy).run(
+            manifest,
+            client=TwelveDataClient(market_policy),
+            objects_root=args.objects,
+            reports_root=args.reports_root,
+            register=EvidenceRegister(args.register),
+            quarantine=MarketDataQuarantineRegister(args.quarantine),
+            checkpoints=HistoricalCheckpointRegister(args.checkpoints),
+            quota=MarketDataQuotaLedger(args.quota_ledger),
+            ledger=ledger,
+            max_credits=args.max_credits,
+        )
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] in {"COMPLETE", "PAUSED_QUOTA", "IN_PROGRESS"} else 2
+    if args.command == "validate-market-history":
+        market_policy = MarketDataPolicy.from_file(args.policy)
+        history_policy = HistoricalAcquisitionPolicy.from_file(args.history_policy)
+        manifest = HistoricalManifest.from_file(args.manifest, market_policy, history_policy)
+        result = validate_historical_state(
+            manifest=manifest,
+            market_policy=market_policy,
+            history_policy=history_policy,
+            objects_root=args.objects,
+            reports_root=args.reports_root,
+            register=EvidenceRegister(args.register),
+            quarantine=MarketDataQuarantineRegister(args.quarantine),
+            checkpoints=HistoricalCheckpointRegister(args.checkpoints),
+            quota=MarketDataQuotaLedger(args.quota_ledger),
+            ledger=EvidenceLedger(args.ledger),
+        )
+        print(json.dumps(result, indent=2))
+        return 0
     if args.command == "freeze-status":
         freeze = load_freeze(args.freeze)
         freeze_status = validate_freeze(freeze)
@@ -225,12 +376,14 @@ def main(argv: list[str] | None = None) -> int:
         evidence_status = validate_record_contract(args.evidence_contract, args.repository_root)
         intake_status = validate_intake_policy(args.intake_policy)
         market_data_status = validate_market_data_policy(args.market_data_policy, args.repository_root)
+        history_status = validate_historical_policy(args.history_policy, args.repository_root)
         print(json.dumps({
             "freeze": freeze_status,
             "traceability": traceability_status,
             "evidence_foundation": evidence_status,
             "research_intake": intake_status,
             "market_data": market_data_status,
+            "historical_acquisition": history_status,
         }, indent=2))
         return 0
     raise AssertionError("unreachable command")

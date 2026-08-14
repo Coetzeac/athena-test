@@ -51,7 +51,9 @@ proposal and Owner/CIO approval. [EF-002, EF-006, EF-010, EF-014]
    floating-point conversion is not used.
 6. The adapter rejects duplicates, non-increasing timestamps, non-positive
    prices, inconsistent OHLC ranges, values outside the requested period,
-   output-cap truncation, and unexpected in-session gaps.
+   output-cap truncation, unexpected in-session gaps, incomplete crypto
+   boundaries, and non-crypto responses that miss more than the greater of two
+   boundary sessions or the recorded 5% session-date tolerance.
 7. Accepted raw provider bytes and normalized JSONL bytes are retained in
    content-addressed runtime storage. Neither may be committed to the public
    repository.
@@ -66,7 +68,10 @@ proposal and Owner/CIO approval. [EF-002, EF-006, EF-010, EF-014]
 
 Large historical periods are partitioned into interval-specific request
 windows. A response that reaches the provider output cap is quarantined rather
-than treated as complete.
+than treated as complete. `ATHENA-HIST-001` adds deterministic manifests,
+pre-request quota reservation, resumable checkpoints, boundary coverage, and
+immutable completeness reports without changing this intake contract. See
+[historical acquisition](HISTORICAL_ACQUISITION.md). [EF-014]
 
 ## Evidence and reproducibility
 
@@ -118,13 +123,16 @@ inventing price bars are prohibited.
 
 ## Current acceptance boundary
 
-This increment implements the controlled adapter, policy, synthetic end-to-end
-path, byte retention, Dataset registration, quarantine, and validation. It does
-not yet prove that the complete approved history for all eight instruments and
-five intervals has been acquired. It does not implement normalized 0–100 market
-features, ATH-001, walk-forward testing, Monte Carlo, cross-market robustness,
-Python/Pine parity, TradingView ingestion, or paper trading.
+The adapter and historical control-plane increments implement the controlled
+policy, synthetic end-to-end path, byte retention, Dataset registration,
+deterministic planning, quota enforcement, resumable checkpoints, quarantine,
+completeness reports, and validation. They do not prove that the complete
+approved provider history for all eight instruments and five intervals has been
+acquired or retained in durable private storage. They do not implement
+normalized 0–100 market features, ATH-001, walk-forward testing, Monte Carlo,
+cross-market robustness, Python/Pine parity, TradingView ingestion, or paper
+trading.
 
-`FR-005` therefore advances from `pending` to `partial`; it is not implemented.
+`FR-005` remains `partial`; it is not implemented.
 `FR-006`, `FR-007`, and `FR-014` do not advance. Live execution remains
 prohibited. [EF-002, EF-003, EF-010, EF-014]

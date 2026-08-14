@@ -70,6 +70,8 @@
     "require_unique_timestamps": true,
     "require_positive_ohlc": true,
     "require_ohlc_range_consistency": true,
+    "noncrypto_session_date_coverage_target_percent": 95,
+    "maximum_noncrypto_boundary_missing_sessions": 2,
     "unexpected_in_session_gap_action": "quarantine",
     "provider_output_cap_action": "quarantine_and_partition",
     "fabricate_missing_bars": false

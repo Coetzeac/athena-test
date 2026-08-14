@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "policy_id": "ATHENA-HIST-001",
+  "resolution_id": "ATHENA-MDR-001",
+  "status": "approved_implementation_control",
+  "approved_at": "2026-08-14",
+  "authority": "Owner/CIO",
+  "evidence_ids": ["EF-002", "EF-006", "EF-010", "EF-014"],
+  "provider_limits": {
+    "observed_at": "2026-08-14",
+    "source_url": "https://twelvedata.com/pricing",
+    "api_credits_per_minute": 8,
+    "api_credits_per_day": 800,
+    "time_series_credit_weight": 1
+  },
+  "execution": {
+    "maximum_credits_per_run": 7,
+    "history_credits_per_minute": 7,
+    "history_credits_per_day": 720,
+    "request_order": "oldest_first",
+    "quota_exhaustion_action": "pause_without_request",
+    "quarantine_action": "stop_and_require_new_manifest",
+    "automatic_retries": 0,
+    "single_writer_required": true
+  },
+  "persistence": {
+    "manifest": "content_addressed_immutable_json",
+    "checkpoint": "append_only_hash_chain",
+    "quota_ledger": "append_only_hash_chain",
+    "completeness_report": "content_addressed_immutable_json",
+    "provider_data_in_public_repository": false
+  },
+  "decision_court_bypass": "prohibited",
+  "live_execution": "prohibited"
+}
