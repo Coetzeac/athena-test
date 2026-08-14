@@ -1,8 +1,8 @@
 {
   "audit": {
-    "entries": 52,
-    "latest_verdict_hash": "559e62dc7ad5031716d5295f0aa20b2551366938a17c2ad43ffe9c71c7ffdde5",
-    "terminal_hash": "7250cb6d08938b4eaaf90866f70b02f19fb2c4a0c8039db3885c3da22128fb60",
+    "entries": 85,
+    "latest_verdict_hash": "3a25eb7c014928e1fd95a5011d0ed6959e75c84f9750d8b89cf8e31e1bb6c5c8",
+    "terminal_hash": "1bd3a5094f84e7b58e4b961ac63f4404e96a0b035583019c405e08a4b65ea880",
     "valid": true
   },
   "counter_evidence": [
@@ -11,7 +11,7 @@
     "No out-of-sample, walk-forward, regime, or front-test evidence exists."
   ],
   "cycle": {
-    "id": "5d320337106f",
+    "id": "09604e99b46a",
     "instrument": "GBPUSD",
     "recommendation": "Promote the rule set only to the next controlled research stage if every Decision Court gate passes.",
     "strategy_id": "ORB-LONDON-GBPUSD-001",
@@ -19,7 +19,7 @@
     "verdict": "HOLD"
   },
   "decision": {
-    "adjudicated_at": "2026-08-14T06:40:51.647931+00:00",
+    "adjudicated_at": "2026-08-14T19:54:47.885593+00:00",
     "confidence": 0.562493877226366,
     "evidence_weight": 0.5833333333333333,
     "gates": [
@@ -141,29 +141,40 @@
       "dataset": "ATH-DAT-D923A2000FDA58017D11DBDE",
       "experiment": "ATH-EXP-F4FB8A8623B7C7F4612F4F30",
       "strategy": "ATH-STR-F35DF5D13E3C7B3A334C7974",
-      "validation_result": "ATH-VAL-3AC4F6DABA8BFB6C0D6074F5"
+      "validation_result": "ATH-VAL-FC4CDC95ADAB2A45D04CF0D4"
     },
-    "entries": 18,
-    "ledger_links": 18,
+    "entries": 29,
+    "ledger_links": 29,
     "record_ids": [
       "ATH-DAT-D923A2000FDA58017D11DBDE",
       "ATH-EXP-F4FB8A8623B7C7F4612F4F30",
       "ATH-STR-F35DF5D13E3C7B3A334C7974",
       "ATH-VAL-041D617FA3BAE60B3D1AD8A8",
       "ATH-VAL-0A469075A9EC1EFDEB924EF4",
+      "ATH-VAL-12CE378347548C76F7A8B720",
+      "ATH-VAL-1DCE43514F5CF03D6156E2CD",
+      "ATH-VAL-21DF502CE2B81E2D38CC30FC",
       "ATH-VAL-23AEEBB798256FA1056AA721",
       "ATH-VAL-24F9BA669FA7C08A723124C0",
       "ATH-VAL-3AC4F6DABA8BFB6C0D6074F5",
+      "ATH-VAL-3CA77C6D2867075BD35C8D30",
       "ATH-VAL-3D98B7CF4F3E521754F58649",
       "ATH-VAL-47D077A0C91C9C10950A6214",
+      "ATH-VAL-4A318007EE9C983AB97D5187",
       "ATH-VAL-6D30D681C0208308B306EBD7",
+      "ATH-VAL-8F434D8367B1EBA813646D23",
+      "ATH-VAL-9882C5CF223B475A98A88D94",
       "ATH-VAL-C3954674C8374C982AB89EB1",
       "ATH-VAL-C6B1D4ED10218A0F24463A4B",
       "ATH-VAL-CB74126D04E4FD3A319E1489",
+      "ATH-VAL-D09A88BEA2B8E59CA535E2A6",
       "ATH-VAL-D39D97AE563F494528712A7F",
       "ATH-VAL-DF79EA5069AADE1DA7D27929",
       "ATH-VAL-E347F42CDC22844D6E124185",
-      "ATH-VAL-E685DB1E73751925FFA6AC50"
+      "ATH-VAL-E685DB1E73751925FFA6AC50",
+      "ATH-VAL-E7EA000A763F86111576BA7F",
+      "ATH-VAL-F397DDC5ECC276460C425C24",
+      "ATH-VAL-FC4CDC95ADAB2A45D04CF0D4"
     ],
     "record_type_counts": {
       "author": 0,
@@ -176,9 +187,9 @@
       "paper": 0,
       "research_card": 0,
       "strategy": 1,
-      "validation_result": 15
+      "validation_result": 26
     },
-    "register_sha256": "94139852e770ff4b6c217712c16391fdf3bdd71a65a382d7ff95b02b972a0add",
+    "register_sha256": "a93c69b55db1f7fe76735edf3b4bef3f874155fbf0dddd73ff50a73c7f6ac556",
     "schema_version": 1,
     "valid": true
   },
@@ -204,5 +215,5 @@
   "schema_version": 1,
   "state": "OPERATIONAL",
   "system": "ATHENA",
-  "updated_at": "2026-08-14T06:40:51.671559+00:00"
+  "updated_at": "2026-08-14T19:54:47.928581+00:00"
 }
