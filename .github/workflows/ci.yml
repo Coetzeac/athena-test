@@ -36,3 +36,5 @@ jobs:
         run: athena ingest-market-fixture examples/market_data/twelve_data_synthetic_daily.json GBP/USD 1day --start 2026-08-03 --end 2026-08-07 --objects /tmp/athena-market-data-objects --register /tmp/athena-evidence-register.jsonl --quarantine /tmp/athena-market-data-quarantine.jsonl --ledger /tmp/athena-ledger.jsonl
       - name: Validate market-data bytes, fingerprints, quarantine, register, and ledger
         run: athena validate-market-data --objects /tmp/athena-market-data-objects --register /tmp/athena-evidence-register.jsonl --quarantine /tmp/athena-market-data-quarantine.jsonl --ledger /tmp/athena-ledger.jsonl
+      - name: Build an immutable bounded historical-acquisition manifest
+        run: athena plan-market-history --start 2020-01-01 --end 2020-01-02 --symbol BTC/USD --interval 1day --manifest-root /tmp/athena-history-control

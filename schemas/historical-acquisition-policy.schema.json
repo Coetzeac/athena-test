@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/historical-acquisition-policy.schema.json",
+  "title": "ATHENA Historical Acquisition Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "resolution_id",
+    "status",
+    "approved_at",
+    "authority",
+    "evidence_ids",
+    "provider_limits",
+    "execution",
+    "persistence",
+    "decision_court_bypass",
+    "live_execution"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "policy_id": {"const": "ATHENA-HIST-001"},
+    "resolution_id": {"const": "ATHENA-MDR-001"},
+    "status": {"const": "approved_implementation_control"},
+    "approved_at": {"const": "2026-08-14"},
+    "authority": {"const": "Owner/CIO"},
+    "evidence_ids": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "provider_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observed_at",
+        "source_url",
+        "api_credits_per_minute",
+        "api_credits_per_day",
+        "time_series_credit_weight"
+      ],
+      "properties": {
+        "observed_at": {"type": "string", "format": "date"},
+        "source_url": {"const": "https://twelvedata.com/pricing"},
+        "api_credits_per_minute": {"const": 8},
+        "api_credits_per_day": {"const": 800},
+        "time_series_credit_weight": {"const": 1}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maximum_credits_per_run",
+        "history_credits_per_minute",
+        "history_credits_per_day",
+        "request_order",
+        "quota_exhaustion_action",
+        "quarantine_action",
+        "automatic_retries",
+        "single_writer_required"
+      ],
+      "properties": {
+        "maximum_credits_per_run": {"const": 7},
+        "history_credits_per_minute": {"const": 7},
+        "history_credits_per_day": {"const": 720},
+        "request_order": {"const": "oldest_first"},
+        "quota_exhaustion_action": {"const": "pause_without_request"},
+        "quarantine_action": {"const": "stop_and_require_new_manifest"},
+        "automatic_retries": {"const": 0},
+        "single_writer_required": {"const": true}
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest",
+        "checkpoint",
+        "quota_ledger",
+        "completeness_report",
+        "provider_data_in_public_repository"
+      ],
+      "properties": {
+        "manifest": {"const": "content_addressed_immutable_json"},
+        "checkpoint": {"const": "append_only_hash_chain"},
+        "quota_ledger": {"const": "append_only_hash_chain"},
+        "completeness_report": {"const": "content_addressed_immutable_json"},
+        "provider_data_in_public_repository": {"const": false}
+      }
+    },
+    "decision_court_bypass": {"const": "prohibited"},
+    "live_execution": {"const": "prohibited"}
+  }
+}

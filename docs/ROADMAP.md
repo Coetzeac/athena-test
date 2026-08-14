@@ -20,9 +20,10 @@ file whose verdict can be reproduced from the example request.
 
 ## Phase 1 — research laboratory
 
-- Historical market-data adapter with dataset fingerprints. The controlled
-  Twelve Data intake path is executable; complete approved-history acquisition
-  remains outstanding. [EF-014]
+- Historical market-data adapter and resumable acquisition control plane with
+  Dataset fingerprints, immutable manifests, quota reservations, terminal
+  checkpoints, and completeness reports. Real durable acquisition of the
+  complete approved provider history remains outstanding. [EF-014]
 - Strategy specification schema and deterministic execution engine.
 - Fees, spread, slippage, session, timezone, and missing-bar controls.
 - Train/validation/test separation and leakage tests.

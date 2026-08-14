@@ -94,8 +94,10 @@ This is a repository-backed control. Controlled synthetic research intake proves
 the paper, author, Research Card, hypothesis, formula, claim-link, quarantine,
 and retained-source path. The approved market-data increment proves the adapter,
 Dataset fingerprint, byte-retention, quarantine, and ledger path with a synthetic
-fixture; real provider history remains internal and is not committed. It does
-not provide the frozen paper corpus, complete approved market history,
+fixture. The historical control plane additionally proves immutable planning,
+quota reservations, restart checkpoints, coverage gates, and completeness-report
+integrity with synthetic tests; real provider history remains internal and is
+not committed. It does not provide the frozen paper corpus, complete approved market history,
 production PostgreSQL persistence, Google Drive reconciliation, backups, or
 recovery evidence. FR-002, FR-003, and FR-005 therefore remain `partial`; none is
 implemented. [EF-006, EF-009, EF-014]

@@ -213,6 +213,8 @@ class MarketDataPolicy:
             "require_unique_timestamps": True,
             "require_positive_ohlc": True,
             "require_ohlc_range_consistency": True,
+            "noncrypto_session_date_coverage_target_percent": 95,
+            "maximum_noncrypto_boundary_missing_sessions": 2,
             "unexpected_in_session_gap_action": "quarantine",
             "provider_output_cap_action": "quarantine_and_partition",
             "fabricate_missing_bars": False,
@@ -293,20 +295,26 @@ class TwelveDataClient:
         policy: MarketDataPolicy,
         *,
         environ: dict[str, str] | None = None,
-        transport: Callable[[str, float], bytes] | None = None,
+        transport: Callable[[str, float], bytes | tuple[bytes, dict[str, str]]] | None = None,
         timeout_seconds: float = 30.0,
     ) -> None:
         self.policy = policy
         self.environ = os.environ if environ is None else environ
         self.transport = transport or self._default_transport
         self.timeout_seconds = timeout_seconds
+        self.last_credit_observation: dict[str, int] = {}
 
     @staticmethod
-    def _default_transport(url: str, timeout: float) -> bytes:
+    def _default_transport(url: str, timeout: float) -> tuple[bytes, dict[str, str]]:
         request = Request(url, headers={"Accept": "application/json", "User-Agent": "ATHENA/0.1"})
         try:
             with urlopen(request, timeout=timeout) as response:
-                return response.read()
+                headers = {
+                    key.lower(): value
+                    for key, value in response.headers.items()
+                    if key.lower() in {"api-credits-used", "api-credits-left"}
+                }
+                return response.read(), headers
         except HTTPError as error:
             raise MarketDataError(f"Twelve Data request failed with HTTP {error.code}") from error
         except URLError as error:
@@ -329,11 +337,33 @@ class TwelveDataClient:
         source_locator = f"{endpoint}?{urlencode(public_parameters)}"
         url = f"{source_locator}&{urlencode({'apikey': api_key})}"
         try:
-            raw = self.transport(url, self.timeout_seconds)
+            response = self.transport(url, self.timeout_seconds)
         except MarketDataError:
             raise
         except Exception as error:
             raise MarketDataError("Twelve Data transport failed without exposing request credentials") from error
+        if isinstance(response, tuple) and len(response) == 2:
+            raw, headers = response
+        elif isinstance(response, bytes):
+            raw, headers = response, {}
+        else:
+            raise MarketDataError("Twelve Data transport returned an invalid response contract")
+        if not isinstance(raw, bytes) or not isinstance(headers, dict):
+            raise MarketDataError("Twelve Data transport returned an invalid response contract")
+        observation: dict[str, int] = {}
+        for header, field in {
+            "api-credits-used": "api_credits_used",
+            "api-credits-left": "api_credits_left",
+        }.items():
+            if header not in headers:
+                continue
+            try:
+                value = int(headers[header])
+            except (TypeError, ValueError):
+                continue
+            if value >= 0:
+                observation[field] = value
+        self.last_credit_observation = observation
         try:
             decoded = json.loads(raw.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError):
@@ -584,6 +614,36 @@ def normalize_provider_payload(
         failures.append(
             f"unexpected in-session gap after {previous.isoformat().replace('+00:00', 'Z')}: {missing} bar(s)"
         )
+    if parsed_times and start is not None and end is not None:
+        if asset_class == "crypto":
+            earliest_permitted = start
+            latest_permitted = end
+        else:
+            weekdays = [
+                start + timedelta(days=offset)
+                for offset in range((end - start).days + 1)
+                if (start + timedelta(days=offset)).weekday() < 5
+            ]
+            boundary_sessions = int(policy.quality["maximum_noncrypto_boundary_missing_sessions"])
+            earliest_permitted = weekdays[min(boundary_sessions, len(weekdays) - 1)] if weekdays else start
+            latest_permitted = weekdays[max(0, len(weekdays) - boundary_sessions - 1)] if weekdays else end
+            observed_session_dates = {item.date() for item in parsed_times if item.date().weekday() < 5}
+            minimum_percent = int(policy.quality["noncrypto_session_date_coverage_target_percent"])
+            percentage_allowance = (len(weekdays) * (100 - minimum_percent) + 99) // 100
+            permitted_missing_dates = max(boundary_sessions, percentage_allowance)
+            minimum_dates = max(1, len(weekdays) - permitted_missing_dates)
+            if len(observed_session_dates & set(weekdays)) < minimum_dates:
+                failures.append(
+                    "provider response does not meet the controlled session-date coverage target"
+                )
+        if parsed_times[0].date() > earliest_permitted:
+            failures.append(
+                "provider response does not cover requested_start within the permitted session boundary"
+            )
+        if parsed_times[-1].date() < latest_permitted:
+            failures.append(
+                "provider response does not cover requested_end within the permitted session boundary"
+            )
     if failures:
         return None, sorted(set(failures))
     return NormalizedMarketData(

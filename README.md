@@ -47,6 +47,9 @@ The first vertical slice provides:
 - an approved Twelve Data adapter with exact universe and interval controls,
   UTC normalization, content-addressed raw and normalized retention, Dataset
   registration, and fail-closed quarantine;
+- a deterministic historical-acquisition controller with immutable manifests,
+  recorded quota reservations, resumable terminal checkpoints, coverage gates,
+  and content-addressed completeness reports;
 - deterministic performance metrics from R-multiple outcomes;
 - Wilson-score confidence and explicit evidence-weight calculation;
 - mandatory counter-evidence, methodology, assumptions, and risk controls;
@@ -110,11 +113,18 @@ PYTHONPATH=src python -m athena.cli validate-market-data \
   --register runtime/evidence-register.jsonl \
   --quarantine runtime/market-data-quarantine.jsonl \
   --ledger runtime/ledger.jsonl
+
+PYTHONPATH=src python -m athena.cli plan-market-history \
+  --end 2026-08-13 \
+  --manifest-root runtime/market-data/history-control
 ```
 
 Real approved retrieval uses `athena ingest-market-data` and reads the API key
 only from `TWELVE_DATA_API_KEY`. Provider data is internal runtime material and
 must not be committed to this public repository. [EF-014]
+Historical execution additionally requires durable private object storage and
+canonical persistent checkpoint, quota, report, register, and ledger paths.
+Ephemeral CI storage cannot prove resumability or evidence retention.
 
 ## Decision contract
 
@@ -149,9 +159,10 @@ docs/                Frozen architecture and governance controls
 ## What exists versus what does not
 
 The kernel, controlled synthetic research intake, approved market-data adapter,
-evidence register, audit trail, Court, scheduled runner, and status interface are
-real and executable. The complete approved market history and research-volume
-targets are not met. Normalized market features, broker execution, portfolio allocation, LLM research
+historical-acquisition control plane, evidence register, audit trail, Court,
+scheduled runner, and status interface are real and executable. The complete
+approved market history and research-volume targets are not met. Normalized
+market features, broker execution, portfolio allocation, LLM research
 adapters, Gmail/Drive evidence ingestion, walk-forward testing, and production
 deployment are deliberately outside this slice. They must be added behind the
 existing contracts and may not weaken the Court.
@@ -160,4 +171,5 @@ See [architecture](docs/ARCHITECTURE.md), [governance](docs/GOVERNANCE.md), and
 the [evidence foundation](docs/EVIDENCE_FOUNDATION.md), the
 [research intake](docs/RESEARCH_INTAKE.md), and the [delivery plan](docs/ROADMAP.md).
 The market-data authority and control path are documented in
-[controlled market-data intake](docs/MARKET_DATA.md).
+[controlled market-data intake](docs/MARKET_DATA.md) and
+[historical acquisition](docs/HISTORICAL_ACQUISITION.md).

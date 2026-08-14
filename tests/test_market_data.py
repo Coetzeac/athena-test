@@ -181,6 +181,39 @@ class MarketDataTests(unittest.TestCase):
             self.assertIn("unexpected in-session gap after 2026-08-01T00:00:00Z: 1 bar(s)", result["reasons"])
             self.assertTrue((root / "objects" / result["source_object_path"]).is_file())
 
+    def test_short_noncrypto_response_cannot_claim_a_week_of_coverage(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            policy = MarketDataPolicy.from_file(POLICY_PATH)
+            intake = MarketDataIntake(policy, clock=lambda: NOW)
+            ledger = EvidenceLedger(root / "ledger.jsonl", clock=lambda: NOW)
+            payload = {
+                "meta": {"symbol": "GBP/USD", "interval": "1day", "exchange_timezone": "UTC"},
+                "values": [{
+                    "datetime": "2026-08-03",
+                    "open": "1.1",
+                    "high": "1.2",
+                    "low": "1.0",
+                    "close": "1.15",
+                }],
+                "status": "ok",
+            }
+            result = intake.ingest_payload(
+                payload,
+                MarketDataRequest("GBP/USD", "1day", "2026-08-03", "2026-08-07"),
+                source_mode="synthetic_fixture",
+                source_locator="memory://short-week",
+                objects_root=root / "objects",
+                register=EvidenceRegister(root / "register.jsonl"),
+                quarantine=MarketDataQuarantineRegister(root / "quarantine.jsonl", clock=lambda: NOW),
+                ledger=ledger,
+            )
+            self.assertEqual(result["status"], "QUARANTINED")
+            self.assertIn(
+                "provider response does not cover requested_end within the permitted session boundary",
+                result["reasons"],
+            )
+
     def test_provider_key_is_required_and_never_appears_in_locator_or_error(self) -> None:
         policy = MarketDataPolicy.from_file(POLICY_PATH)
         request = approved_request()

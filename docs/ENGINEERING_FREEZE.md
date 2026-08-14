@@ -122,6 +122,13 @@ market features, ATH-001, a strategy, TradingView parity, paper signals, broker
 access, or live trading. `FR-005` is therefore partial until its complete
 acceptance condition is evidenced.
 
+`ATHENA-HIST-001` implements deterministic historical request manifests,
+recorded Basic-plan quota controls, resumable hash-chained checkpoints, coverage
+gates, and immutable completeness reports under this resolution. It changes no
+protected layer or authority. A completed bounded manifest cannot be labelled
+complete approved history, and the control plane does not prove that real
+provider history has been durably acquired. [EF-002, EF-006, EF-010, EF-014]
+
 ## Controlled experiment queue
 
 | ID | Experiment | State |
