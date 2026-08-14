@@ -7,6 +7,15 @@ from pathlib import Path
 from athena.evidence import EvidenceLedger
 from athena.freeze import load_freeze, validate_freeze, validate_traceability
 from athena.intake import QuarantineRegister, ResearchIntake, validate_intake_policy, validate_intake_state
+from athena.market_data import (
+    MarketDataIntake,
+    MarketDataPolicy,
+    MarketDataQuarantineRegister,
+    MarketDataRequest,
+    TwelveDataClient,
+    validate_market_data_policy,
+    validate_market_data_state,
+)
 from athena.orchestrator import run_cycle
 from athena.records import EvidenceRegister, validate_record_contract
 
@@ -16,6 +25,7 @@ DEFAULT_FREEZE = Path("config/engineering_freeze.json")
 DEFAULT_TRACEABILITY = Path("config/freeze_traceability.json")
 DEFAULT_EVIDENCE_CONTRACT = Path("config/evidence_registers.json")
 DEFAULT_INTAKE_POLICY = Path("config/research_intake_policy.json")
+DEFAULT_MARKET_DATA_POLICY = Path("config/market_data_policy.json")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -56,11 +66,63 @@ def build_parser() -> argparse.ArgumentParser:
     validate_intake.add_argument("--quarantine", type=Path, default=Path("runtime/intake-quarantine.jsonl"))
     validate_intake.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
 
+    ingest_market = subcommands.add_parser(
+        "ingest-market-data",
+        help="ingest one approved Twelve Data request without exposing its API key",
+    )
+    ingest_market.add_argument("symbol")
+    ingest_market.add_argument("interval")
+    ingest_market.add_argument("--start", required=True)
+    ingest_market.add_argument("--end", required=True)
+    ingest_market.add_argument("--policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
+    ingest_market.add_argument("--objects", type=Path, default=Path("runtime/market-data/objects"))
+    ingest_market.add_argument("--register", type=Path, default=Path("runtime/evidence-register.jsonl"))
+    ingest_market.add_argument(
+        "--quarantine",
+        type=Path,
+        default=Path("runtime/market-data-quarantine.jsonl"),
+    )
+    ingest_market.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
+
+    ingest_market_fixture = subcommands.add_parser(
+        "ingest-market-fixture",
+        help="ingest a synthetic market-data fixture that cannot count as empirical evidence",
+    )
+    ingest_market_fixture.add_argument("fixture", type=Path)
+    ingest_market_fixture.add_argument("symbol")
+    ingest_market_fixture.add_argument("interval")
+    ingest_market_fixture.add_argument("--start", required=True)
+    ingest_market_fixture.add_argument("--end", required=True)
+    ingest_market_fixture.add_argument("--policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
+    ingest_market_fixture.add_argument("--objects", type=Path, default=Path("runtime/market-data/objects"))
+    ingest_market_fixture.add_argument("--register", type=Path, default=Path("runtime/evidence-register.jsonl"))
+    ingest_market_fixture.add_argument(
+        "--quarantine",
+        type=Path,
+        default=Path("runtime/market-data-quarantine.jsonl"),
+    )
+    ingest_market_fixture.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
+
+    validate_market = subcommands.add_parser(
+        "validate-market-data",
+        help="validate retained market data, fingerprints, quarantine, register, and ledger",
+    )
+    validate_market.add_argument("--policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
+    validate_market.add_argument("--objects", type=Path, default=Path("runtime/market-data/objects"))
+    validate_market.add_argument("--register", type=Path, default=Path("runtime/evidence-register.jsonl"))
+    validate_market.add_argument(
+        "--quarantine",
+        type=Path,
+        default=Path("runtime/market-data-quarantine.jsonl"),
+    )
+    validate_market.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
+
     freeze = subcommands.add_parser("freeze-status", help="validate the engineering freeze and implementation mapping")
     freeze.add_argument("--freeze", type=Path, default=DEFAULT_FREEZE)
     freeze.add_argument("--traceability", type=Path, default=DEFAULT_TRACEABILITY)
     freeze.add_argument("--evidence-contract", type=Path, default=DEFAULT_EVIDENCE_CONTRACT)
     freeze.add_argument("--intake-policy", type=Path, default=DEFAULT_INTAKE_POLICY)
+    freeze.add_argument("--market-data-policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
     freeze.add_argument("--repository-root", type=Path, default=Path("."))
     return parser
 
@@ -106,6 +168,55 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(json.dumps(result, indent=2))
         return 0
+    if args.command in {"ingest-market-data", "ingest-market-fixture"}:
+        policy = MarketDataPolicy.from_file(args.policy)
+        intake = MarketDataIntake(policy)
+        request = MarketDataRequest(
+            symbol=args.symbol,
+            interval=args.interval,
+            start_date=args.start,
+            end_date=args.end,
+        )
+        ledger = EvidenceLedger(args.ledger)
+        common = {
+            "objects_root": args.objects,
+            "register": EvidenceRegister(args.register),
+            "quarantine": MarketDataQuarantineRegister(args.quarantine),
+            "ledger": ledger,
+        }
+        if args.command == "ingest-market-data":
+            result = intake.ingest_live(
+                request,
+                client=TwelveDataClient(policy),
+                **common,
+            )
+        else:
+            fixture_bytes = args.fixture.read_bytes()
+            try:
+                decoded_fixture = json.loads(fixture_bytes.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                decoded_fixture = {}
+            payload = decoded_fixture if isinstance(decoded_fixture, dict) else {}
+            result = intake.ingest_payload(
+                payload,
+                request,
+                source_mode="synthetic_fixture",
+                source_locator=f"repository://{args.fixture.as_posix()}",
+                source_bytes=fixture_bytes,
+                **common,
+            )
+        print(json.dumps(result, indent=2))
+        return 0 if result["status"] in {"ACCEPTED", "DUPLICATE"} else 2
+    if args.command == "validate-market-data":
+        result = validate_market_data_state(
+            policy=MarketDataPolicy.from_file(args.policy),
+            objects_root=args.objects,
+            register=EvidenceRegister(args.register),
+            quarantine=MarketDataQuarantineRegister(args.quarantine),
+            ledger=EvidenceLedger(args.ledger),
+        )
+        print(json.dumps(result, indent=2))
+        return 0
     if args.command == "freeze-status":
         freeze = load_freeze(args.freeze)
         freeze_status = validate_freeze(freeze)
@@ -113,11 +224,13 @@ def main(argv: list[str] | None = None) -> int:
         traceability_status = validate_traceability(freeze, traceability, args.repository_root)
         evidence_status = validate_record_contract(args.evidence_contract, args.repository_root)
         intake_status = validate_intake_policy(args.intake_policy)
+        market_data_status = validate_market_data_policy(args.market_data_policy, args.repository_root)
         print(json.dumps({
             "freeze": freeze_status,
             "traceability": traceability_status,
             "evidence_foundation": evidence_status,
             "research_intake": intake_status,
+            "market_data": market_data_status,
         }, indent=2))
         return 0
     raise AssertionError("unreachable command")

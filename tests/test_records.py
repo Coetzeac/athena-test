@@ -145,7 +145,7 @@ class RecordContractTests(unittest.TestCase):
         status = validate_record_contract(ROOT / "config" / "evidence_registers.json", ROOT)
         self.assertTrue(status["valid"])
         self.assertEqual(status["record_types"], 11)
-        self.assertEqual(status["schemas"], 5)
+        self.assertEqual(status["schemas"], 6)
 
     def test_non_finite_identity_is_rejected_by_canonical_json(self) -> None:
         with self.assertRaises(ValueError):

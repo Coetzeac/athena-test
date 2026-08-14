@@ -98,6 +98,30 @@ not accepted trading policy. They require one-variable experiments and complete
 validation before promotion. This distinction prevents a prior proposal from
 being laundered into an approved live rule.
 
+## Approved market-data resolution
+
+On 14 August 2026 the Owner/CIO approved `ATHENA-MDR-001`. Twelve Data Basic is
+the initial internal, non-commercial research provider. The approved universe is
+EUR/USD, GBP/USD, USD/JPY, SPY, QQQ, GLD, BTC/USD, and ETH/USD. Approved
+intervals are 5-minute, 15-minute, 1-hour, 4-hour, and daily. Daily history
+starts on 1 January 2010 or instrument inception if later; intraday history
+starts on 1 January 2020. [EF-014]
+
+Every accepted dataset must retain raw and UTC-normalized bytes internally,
+preserve provider metadata, expose exact request and quality findings, receive a
+content fingerprint and stable Dataset ID, and reconcile to the hash-chained
+ledger. Missing, conflicting, malformed, duplicated, or truncated data is
+quarantined; bars may not be fabricated. Provider data and credentials may not
+be committed to the public repository. The initial monthly data budget is USD 0;
+an upgrade up to USD 79 per month still requires separate evidence and Owner/CIO
+approval. Redistribution and live execution remain prohibited. [EF-002, EF-006,
+EF-010, EF-014]
+
+This resolution authorizes the controlled data adapter only. It does not approve
+market features, ATH-001, a strategy, TradingView parity, paper signals, broker
+access, or live trading. `FR-005` is therefore partial until its complete
+acceptance condition is evidenced.
+
 ## Controlled experiment queue
 
 | ID | Experiment | State |
@@ -193,7 +217,9 @@ contract and its implementation mapping.
 
 ## Unresolved—not silently decided
 
-The recovered freeze does not establish the market-data vendor, broker, exact
-instrument universe, history window, numeric validation parameters, production
-risk limits, VPS provider, domain, SLO, RPO, RTO, or operating budgets. Those
-items require separate evidence-backed proposals and Owner/CIO approval.
+The market-data provider, initial universe, history windows, intervals, internal
+usage boundary, and data budget are now controlled by `ATHENA-MDR-001`. The
+freeze still does not establish the broker, commercial redistribution licence,
+numeric validation parameters, production risk limits, VPS provider, domain,
+SLO, RPO, RTO, or the remaining operating budgets. Those items require separate
+evidence-backed proposals and Owner/CIO approval.

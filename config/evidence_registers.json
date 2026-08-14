@@ -22,7 +22,8 @@
     "dataset_fingerprint": "schemas/dataset-fingerprint.schema.json",
     "research_intake": "schemas/research-intake.schema.json",
     "research_card": "schemas/research-card.schema.json",
-    "formula_extraction": "schemas/formula-extraction.schema.json"
+    "formula_extraction": "schemas/formula-extraction.schema.json",
+    "market_data_policy": "schemas/market-data-policy.schema.json"
   },
   "record_types": [
     {"record_type": "author", "prefix": "AUT", "required_identity_fields": ["author_key"]},

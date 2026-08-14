@@ -12,3 +12,5 @@ data/private/
 runtime/*.tmp
 runtime/objects/
 runtime/intake-quarantine.jsonl
+runtime/market-data/
+runtime/market-data-quarantine.jsonl

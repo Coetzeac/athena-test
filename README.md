@@ -44,6 +44,9 @@ The first vertical slice provides:
   append-only evidence register reconciled to the audit ledger;
 - controlled research intake with retained source bytes, bibliography and author
   records, evidence-to-claim links, duplicate detection, and audited quarantine;
+- an approved Twelve Data adapter with exact universe and interval controls,
+  UTC normalization, content-addressed raw and normalized retention, Dataset
+  registration, and fail-closed quarantine;
 - deterministic performance metrics from R-multiple outcomes;
 - Wilson-score confidence and explicit evidence-weight calculation;
 - mandatory counter-evidence, methodology, assumptions, and risk controls;
@@ -93,7 +96,25 @@ PYTHONPATH=src python -m athena.cli validate-intake \
   --register runtime/evidence-register.jsonl \
   --quarantine runtime/intake-quarantine.jsonl \
   --ledger runtime/ledger.jsonl
+
+PYTHONPATH=src python -m athena.cli ingest-market-fixture \
+  examples/market_data/twelve_data_synthetic_daily.json GBP/USD 1day \
+  --start 2026-08-03 --end 2026-08-07 \
+  --objects runtime/market-data/objects \
+  --register runtime/evidence-register.jsonl \
+  --quarantine runtime/market-data-quarantine.jsonl \
+  --ledger runtime/ledger.jsonl
+
+PYTHONPATH=src python -m athena.cli validate-market-data \
+  --objects runtime/market-data/objects \
+  --register runtime/evidence-register.jsonl \
+  --quarantine runtime/market-data-quarantine.jsonl \
+  --ledger runtime/ledger.jsonl
 ```
+
+Real approved retrieval uses `athena ingest-market-data` and reads the API key
+only from `TWELVE_DATA_API_KEY`. Provider data is internal runtime material and
+must not be committed to this public repository. [EF-014]
 
 ## Decision contract
 
@@ -116,8 +137,8 @@ policy in `config/decision_policy.json`. Every verdict publishes:
 ```text
 src/athena/          Executable kernel and orchestration
 config/              Versioned Decision Court policy
-schemas/             Closed evidence, dataset, intake, card, and formula contracts
-examples/            Synthetic reproducible research and intake requests
+schemas/             Closed evidence, dataset, intake, card, formula, and market-data contracts
+examples/            Synthetic reproducible research, intake, and market-data requests
 tests/               Contract, metric, ledger, and end-to-end tests
 dashboard/           Read-only operational status interface
 runtime/             Machine-readable ledger and latest status
@@ -127,10 +148,10 @@ docs/                Frozen architecture and governance controls
 
 ## What exists versus what does not
 
-The kernel, controlled synthetic research intake, evidence register, audit trail,
-Court, scheduled runner, and status interface are real and executable. The
-research-volume targets are not met.
-Market-data connectors, broker execution, portfolio allocation, LLM research
+The kernel, controlled synthetic research intake, approved market-data adapter,
+evidence register, audit trail, Court, scheduled runner, and status interface are
+real and executable. The complete approved market history and research-volume
+targets are not met. Normalized market features, broker execution, portfolio allocation, LLM research
 adapters, Gmail/Drive evidence ingestion, walk-forward testing, and production
 deployment are deliberately outside this slice. They must be added behind the
 existing contracts and may not weaken the Court.
@@ -138,3 +159,5 @@ existing contracts and may not weaken the Court.
 See [architecture](docs/ARCHITECTURE.md), [governance](docs/GOVERNANCE.md), and
 the [evidence foundation](docs/EVIDENCE_FOUNDATION.md), the
 [research intake](docs/RESEARCH_INTAKE.md), and the [delivery plan](docs/ROADMAP.md).
+The market-data authority and control path are documented in
+[controlled market-data intake](docs/MARKET_DATA.md).
