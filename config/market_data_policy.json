@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "resolution_id": "ATHENA-MDR-001",
+  "title": "ATHENA Market Data Resolution 1",
+  "status": "approved_internal_research",
+  "approved_at": "2026-08-14",
+  "authority": "Owner/CIO",
+  "evidence_ids": ["EF-002", "EF-006", "EF-010", "EF-014"],
+  "provider": {
+    "name": "Twelve Data",
+    "api_base_url": "https://api.twelvedata.com",
+    "time_series_path": "/time_series",
+    "api_key_environment_variable": "TWELVE_DATA_API_KEY",
+    "plan": "Basic",
+    "monthly_budget_usd": 0,
+    "conditional_upgrade_cap_usd": 79,
+    "upgrade_rule": "No purchase or upgrade without evidence that the free limit blocks an approved requirement and a separate Owner/CIO decision.",
+    "usage_rights": "personal-internal-non-commercial",
+    "redistribution_permitted": false
+  },
+  "universe": [
+    {"symbol": "EUR/USD", "asset_class": "forex", "history_start": "2010-01-01"},
+    {"symbol": "GBP/USD", "asset_class": "forex", "history_start": "2010-01-01"},
+    {"symbol": "USD/JPY", "asset_class": "forex", "history_start": "2010-01-01"},
+    {"symbol": "SPY", "asset_class": "etf", "history_start": "2010-01-01"},
+    {"symbol": "QQQ", "asset_class": "etf", "history_start": "2010-01-01"},
+    {"symbol": "GLD", "asset_class": "etf", "history_start": "2010-01-01"},
+    {"symbol": "BTC/USD", "asset_class": "crypto", "history_start": "2010-01-01"},
+    {"symbol": "ETH/USD", "asset_class": "crypto", "history_start": "2015-08-07"}
+  ],
+  "history": {
+    "daily_start": "2010-01-01",
+    "intraday_start": "2020-01-01",
+    "end": "current_date",
+    "instrument_inception_if_later": true
+  },
+  "intervals": ["5min", "15min", "1h", "4h", "1day"],
+  "request_window_days": {
+    "5min": 10,
+    "15min": 30,
+    "1h": 180,
+    "4h": 720,
+    "1day": 5000
+  },
+  "storage": {
+    "timestamp_timezone": "UTC",
+    "preserve_provider_metadata": true,
+    "retain_raw_response": true,
+    "retain_normalized_bars": true,
+    "content_addressed": true,
+    "public_repository_data_permitted": false
+  },
+  "required_dataset_fields": [
+    "provider",
+    "symbol",
+    "asset_class",
+    "interval",
+    "requested_start",
+    "requested_end",
+    "acquired_at",
+    "row_count",
+    "missing_bar_count",
+    "configuration_sha256",
+    "content_sha256"
+  ],
+  "required_bar_fields": ["timestamp_utc", "open", "high", "low", "close", "volume"],
+  "quality": {
+    "maximum_rows_per_response": 5000,
+    "require_strictly_increasing_timestamps": true,
+    "require_unique_timestamps": true,
+    "require_positive_ohlc": true,
+    "require_ohlc_range_consistency": true,
+    "unexpected_in_session_gap_action": "quarantine",
+    "provider_output_cap_action": "quarantine_and_partition",
+    "fabricate_missing_bars": false
+  },
+  "quarantine_disposition": "QUARANTINED_NO_RESEARCH_OR_COURT_USE",
+  "decision_court_bypass": "prohibited",
+  "live_execution": "prohibited"
+}

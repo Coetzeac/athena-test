@@ -5,9 +5,9 @@
 The complete engineering freeze is integrated as a controlled specification,
 but it is not fully implemented. The executable Phase 0 kernel now covers stable
 knowledge-record identities, provenance, dataset fingerprints, controlled
-synthetic paper intake, claim links, quarantine, an append-only evidence
+synthetic paper intake, approved market-data intake, claim links, quarantine, an append-only evidence
 register, register-ledger reconciliation, the Court, basic metrics, CLI, CI, and
-a partial dashboard. The required research corpus, market-data plane,
+a partial dashboard. The required research corpus, complete market-data history and feature plane,
 validation laboratory, durable runtime, Drive system of record, Pine parity,
 and controlled trading interfaces remain incomplete.
 
@@ -30,7 +30,7 @@ status terms mean:
 | FR-002 Seven layers | Partial | Knowledge/Evidence intake contracts execute; the remaining layers lack complete stable interfaces |
 | FR-003 Scale targets | Partial | Intake/register capability exists; the required evidence corpus and counts do not |
 | FR-004 Fixed pipeline | Partial | Phase 0 packet-to-Court path only |
-| FR-005 Market intelligence | Pending | No normalized feature engine |
+| FR-005 Market intelligence | Partial | Approved adapter executes; complete history and normalized feature engine absent |
 | FR-006 Experiment queue | Scaffolded | Queue recorded; ATH-001 not implemented |
 | FR-007 Validation | Pending | No walk-forward, Monte Carlo, cross-market, or sensitivity engine |
 | FR-008 Court and Skeptic | Partial | Court exists; distinct Skeptic/Risk/Strategy components absent |
@@ -48,9 +48,9 @@ status terms mean:
 
 1. Populate eligible papers, Research Cards, hypotheses, formulae, and claim
    relationships through controlled intake and approved systems of record.
-2. Implement a licensed market-data adapter against the existing fingerprint
-   contract only after the provider and universe are approved.
-3. Implement ATH-001 in Python with reproducible test fixtures.
+2. Execute the approved provider smoke test and acquire controlled, fingerprinted
+   history across the approved universe without committing provider data.
+3. Implement ATH-001 in Python with reproducible test fixtures and registered datasets.
 4. Implement the walk-forward, Monte Carlo, cross-market, sensitivity, and
    robustness gates.
 5. Implement Pine parity and TradingView artifact ingestion.

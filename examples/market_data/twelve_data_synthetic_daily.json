@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "symbol": "GBP/USD",
+    "interval": "1day",
+    "currency_base": "British Pound",
+    "currency_quote": "US Dollar",
+    "exchange_timezone": "UTC",
+    "type": "Physical Currency"
+  },
+  "values": [
+    {"datetime": "2026-08-03", "open": "1.32700", "high": "1.33400", "low": "1.32400", "close": "1.33100"},
+    {"datetime": "2026-08-04", "open": "1.33100", "high": "1.33800", "low": "1.32800", "close": "1.33600"},
+    {"datetime": "2026-08-05", "open": "1.33600", "high": "1.34000", "low": "1.33000", "close": "1.33300"},
+    {"datetime": "2026-08-06", "open": "1.33300", "high": "1.33900", "low": "1.32900", "close": "1.33700"},
+    {"datetime": "2026-08-07", "open": "1.33700", "high": "1.34200", "low": "1.33400", "close": "1.34000"}
+  ],
+  "status": "ok"
+}

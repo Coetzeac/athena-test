@@ -64,6 +64,25 @@ MINIMUM_TARGETS = {
     "minimum_strategies": 5,
 }
 
+APPROVED_MARKET_DATA = {
+    "resolution_id": "ATHENA-MDR-001",
+    "provider": "Twelve Data",
+    "plan": "Basic",
+    "usage": "personal-internal-non-commercial",
+    "redistribution_permitted": False,
+    "universe": ["EUR/USD", "GBP/USD", "USD/JPY", "SPY", "QQQ", "GLD", "BTC/USD", "ETH/USD"],
+    "daily_history_start": "2010-01-01 or instrument inception if later",
+    "intraday_history_start": "2020-01-01",
+    "intervals": ["5min", "15min", "1h", "4h", "1day"],
+    "storage_timezone": "UTC",
+    "monthly_budget_usd": 0,
+    "conditional_upgrade_cap_usd": 79,
+    "upgrade_authority": "Separate evidence and Owner/CIO approval required",
+    "quality_failure": "quarantine; no fabricated bars; no research or Court use",
+    "live_execution": "prohibited",
+    "evidence_ids": ["EF-002", "EF-006", "EF-010", "EF-014"],
+}
+
 
 class FreezeValidationError(ValueError):
     """Raised when a protected engineering-freeze invariant is violated."""
@@ -149,12 +168,17 @@ def validate_freeze(freeze: dict[str, Any]) -> dict[str, Any]:
     if freeze.get("human_authority", {}).get("execution_default") != "live execution prohibited until separately approved":
         failures.append("live-execution prohibition is missing")
 
+    if freeze.get("approved_market_data") != APPROVED_MARKET_DATA:
+        failures.append("approved market-data resolution differs from ATHENA-MDR-001")
+
     evidence_ids = {
         item.get("evidence_id") for item in freeze.get("evidence_register", [])
         if item.get("evidence_id")
     }
     if len(evidence_ids) != len(freeze.get("evidence_register", [])):
         failures.append("evidence IDs must be present and unique")
+    if "EF-014" not in evidence_ids:
+        failures.append("market-data approval evidence EF-014 is missing")
     referenced_ids = _collect_evidence_references(freeze)
     unknown_evidence = referenced_ids - evidence_ids
     if unknown_evidence:
@@ -230,4 +254,3 @@ def _collect_evidence_references(value: Any) -> set[str]:
         for child in value:
             referenced.update(_collect_evidence_references(child))
     return referenced
-

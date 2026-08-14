@@ -24,8 +24,8 @@ class EngineeringFreezeTests(unittest.TestCase):
         self.assertEqual(mapping["status_counts"], {
             "blocked_external": 2,
             "implemented": 1,
-            "partial": 7,
-            "pending": 4,
+            "partial": 8,
+            "pending": 3,
             "scaffolded": 3,
         })
 
@@ -61,6 +61,14 @@ class EngineeringFreezeTests(unittest.TestCase):
         changed["requirements"].pop()
         with self.assertRaises(FreezeValidationError):
             validate_traceability(freeze, changed, ROOT)
+
+    def test_market_data_resolution_cannot_be_broadened_or_weakened(self) -> None:
+        freeze = load_freeze(FREEZE_PATH)
+        changed = copy.deepcopy(freeze)
+        changed["approved_market_data"]["universe"].append("XAU/USD")
+        changed["approved_market_data"]["live_execution"] = "permitted"
+        with self.assertRaises(FreezeValidationError):
+            validate_freeze(changed)
 
 
 if __name__ == "__main__":

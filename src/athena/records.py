@@ -629,6 +629,7 @@ def validate_record_contract(
         "research_intake",
         "research_card",
         "formula_extraction",
+        "market_data_policy",
     }
     if set(schema_paths) != required_schemas:
         failures.append(f"evidence schemas must be exactly: {sorted(required_schemas)}")

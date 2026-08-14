@@ -88,6 +88,12 @@
       "observed_at": "2026-08-06T12:03:43Z",
       "authority": "approved_design_record",
       "record": "Decision capabilities include Market State, Strategy Selector, Risk Manager, Evidence Engine, Trade Reviewer, Market Memory, and Skeptic; the Skeptic blocks unsupported, overfit, and material event-risk trades."
+    },
+    {
+      "evidence_id": "EF-014",
+      "observed_at": "2026-08-14",
+      "authority": "user_approval",
+      "record": "ATHENA Market Data Resolution 1 approves Twelve Data Basic for internal non-commercial research; EUR/USD, GBP/USD, USD/JPY, SPY, QQQ, GLD, BTC/USD, and ETH/USD; 5-minute, 15-minute, 1-hour, 4-hour, and daily bars; daily history from 2010 or inception and intraday history from 2020; UTC normalization with retained source metadata; content fingerprints and fail-closed quarantine; a USD 0 initial budget and no upgrade above USD 79 per month without separate evidence and approval; no redistribution and no live execution."
     }
   ],
   "mission": {
@@ -212,6 +218,24 @@
     },
     "evidence_ids": ["EF-003", "EF-010", "EF-011"]
   },
+  "approved_market_data": {
+    "resolution_id": "ATHENA-MDR-001",
+    "provider": "Twelve Data",
+    "plan": "Basic",
+    "usage": "personal-internal-non-commercial",
+    "redistribution_permitted": false,
+    "universe": ["EUR/USD", "GBP/USD", "USD/JPY", "SPY", "QQQ", "GLD", "BTC/USD", "ETH/USD"],
+    "daily_history_start": "2010-01-01 or instrument inception if later",
+    "intraday_history_start": "2020-01-01",
+    "intervals": ["5min", "15min", "1h", "4h", "1day"],
+    "storage_timezone": "UTC",
+    "monthly_budget_usd": 0,
+    "conditional_upgrade_cap_usd": 79,
+    "upgrade_authority": "Separate evidence and Owner/CIO approval required",
+    "quality_failure": "quarantine; no fabricated bars; no research or Court use",
+    "live_execution": "prohibited",
+    "evidence_ids": ["EF-002", "EF-006", "EF-010", "EF-014"]
+  },
   "experiment_queue": [
     {"experiment_id": "ATH-001", "name": "HAR-RV Proxy", "status": "first controlled experiment"},
     {"experiment_id": "ATH-002", "name": "ATR Percentile", "status": "queued"},
@@ -334,14 +358,13 @@
     {"requirement_id": "FR-017", "name": "Change control and evidence traceability"}
   ],
   "unresolved_specifications": [
-    "Selected market-data provider and commercial licence",
+    "Market-data commercial or redistribution licence for any use beyond the approved internal non-commercial boundary",
     "Selected broker and broker API",
-    "Exact cross-market instrument universe and history window",
     "Numeric walk-forward, Monte Carlo, sensitivity, and robustness parameters",
     "Production position, portfolio, daily-loss, and kill-switch limits",
     "VPS provider, domain, and deployment credentials",
     "Service-level objectives, recovery-point objective, and recovery-time objective",
-    "Monthly GPT, data, storage, and infrastructure budgets",
+    "Monthly GPT, storage, and infrastructure budgets and any market-data spend above the separately approved cap",
     "Complete source conversation export for line-by-line reconciliation"
   ]
 }

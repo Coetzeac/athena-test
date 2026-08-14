@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/market-data-policy.schema.json",
+  "title": "ATHENA Market Data Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "resolution_id",
+    "title",
+    "status",
+    "approved_at",
+    "authority",
+    "evidence_ids",
+    "provider",
+    "universe",
+    "history",
+    "intervals",
+    "request_window_days",
+    "storage",
+    "required_dataset_fields",
+    "required_bar_fields",
+    "quality",
+    "quarantine_disposition",
+    "decision_court_bypass",
+    "live_execution"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "resolution_id": {"const": "ATHENA-MDR-001"},
+    "title": {"type": "string", "minLength": 1},
+    "status": {"const": "approved_internal_research"},
+    "approved_at": {"type": "string", "format": "date"},
+    "authority": {"const": "Owner/CIO"},
+    "evidence_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "api_base_url",
+        "time_series_path",
+        "api_key_environment_variable",
+        "plan",
+        "monthly_budget_usd",
+        "conditional_upgrade_cap_usd",
+        "upgrade_rule",
+        "usage_rights",
+        "redistribution_permitted"
+      ],
+      "properties": {
+        "name": {"const": "Twelve Data"},
+        "api_base_url": {"const": "https://api.twelvedata.com"},
+        "time_series_path": {"const": "/time_series"},
+        "api_key_environment_variable": {"const": "TWELVE_DATA_API_KEY"},
+        "plan": {"const": "Basic"},
+        "monthly_budget_usd": {"const": 0},
+        "conditional_upgrade_cap_usd": {"const": 79},
+        "upgrade_rule": {"type": "string", "minLength": 1},
+        "usage_rights": {"const": "personal-internal-non-commercial"},
+        "redistribution_permitted": {"const": false}
+      }
+    },
+    "universe": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["symbol", "asset_class", "history_start"],
+        "properties": {
+          "symbol": {"type": "string", "minLength": 1},
+          "asset_class": {"enum": ["forex", "etf", "crypto"]},
+          "history_start": {"type": "string", "format": "date"}
+        }
+      }
+    },
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["daily_start", "intraday_start", "end", "instrument_inception_if_later"],
+      "properties": {
+        "daily_start": {"const": "2010-01-01"},
+        "intraday_start": {"const": "2020-01-01"},
+        "end": {"const": "current_date"},
+        "instrument_inception_if_later": {"const": true}
+      }
+    },
+    "intervals": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {"enum": ["5min", "15min", "1h", "4h", "1day"]}
+    },
+    "request_window_days": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["5min", "15min", "1h", "4h", "1day"],
+      "properties": {
+        "5min": {"type": "integer", "minimum": 1},
+        "15min": {"type": "integer", "minimum": 1},
+        "1h": {"type": "integer", "minimum": 1},
+        "4h": {"type": "integer", "minimum": 1},
+        "1day": {"type": "integer", "minimum": 1}
+      }
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timestamp_timezone",
+        "preserve_provider_metadata",
+        "retain_raw_response",
+        "retain_normalized_bars",
+        "content_addressed",
+        "public_repository_data_permitted"
+      ],
+      "properties": {
+        "timestamp_timezone": {"const": "UTC"},
+        "preserve_provider_metadata": {"const": true},
+        "retain_raw_response": {"const": true},
+        "retain_normalized_bars": {"const": true},
+        "content_addressed": {"const": true},
+        "public_repository_data_permitted": {"const": false}
+      }
+    },
+    "required_dataset_fields": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "required_bar_fields": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maximum_rows_per_response",
+        "require_strictly_increasing_timestamps",
+        "require_unique_timestamps",
+        "require_positive_ohlc",
+        "require_ohlc_range_consistency",
+        "unexpected_in_session_gap_action",
+        "provider_output_cap_action",
+        "fabricate_missing_bars"
+      ],
+      "properties": {
+        "maximum_rows_per_response": {"const": 5000},
+        "require_strictly_increasing_timestamps": {"const": true},
+        "require_unique_timestamps": {"const": true},
+        "require_positive_ohlc": {"const": true},
+        "require_ohlc_range_consistency": {"const": true},
+        "unexpected_in_session_gap_action": {"const": "quarantine"},
+        "provider_output_cap_action": {"const": "quarantine_and_partition"},
+        "fabricate_missing_bars": {"const": false}
+      }
+    },
+    "quarantine_disposition": {"const": "QUARANTINED_NO_RESEARCH_OR_COURT_USE"},
+    "decision_court_bypass": {"const": "prohibited"},
+    "live_execution": {"const": "prohibited"}
+  }
+}

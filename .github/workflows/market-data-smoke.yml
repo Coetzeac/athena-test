@@ -1,0 +1,50 @@
+name: ATHENA Market Data Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  provider-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ATHENA
+        run: python -m pip install -e .
+      - name: Validate frozen authority
+        run: athena freeze-status
+      - name: Require the repository secret without displaying it
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: |
+          if [ -z "$TWELVE_DATA_API_KEY" ]; then
+            echo "Required repository secret TWELVE_DATA_API_KEY is not configured."
+            exit 1
+          fi
+      - name: Fetch and validate an approved internal daily sample
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: |
+          set -euo pipefail
+          end_date="$(date -u -d 'yesterday' +%F)"
+          start_date="$(date -u -d "$end_date - 10 days" +%F)"
+          athena ingest-market-data EUR/USD 1day \
+            --start "$start_date" --end "$end_date" \
+            --objects /tmp/athena-market-data-objects \
+            --register /tmp/athena-market-data-register.jsonl \
+            --quarantine /tmp/athena-market-data-quarantine.jsonl \
+            --ledger /tmp/athena-market-data-ledger.jsonl \
+            > /tmp/athena-market-data-result.json
+          athena validate-market-data \
+            --objects /tmp/athena-market-data-objects \
+            --register /tmp/athena-market-data-register.jsonl \
+            --quarantine /tmp/athena-market-data-quarantine.jsonl \
+            --ledger /tmp/athena-market-data-ledger.jsonl \
+            > /dev/null
+          echo "Approved provider smoke passed; no price data or credentials were published."
