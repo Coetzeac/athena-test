@@ -59,10 +59,17 @@ The first vertical slice provides:
 - a source-eligibility gate that prevents synthetic fixtures from being promoted;
 - policy gates for sample size, hit rate, expectancy, profit factor, and drawdown;
 - a Decision Court that returns `PROMOTE`, `HOLD`, or `REJECT` with gate-level reasons;
+- an approved idempotent hourly-cycle control that revalidates exact repeats
+  without duplicate ledger, register, status, or Git commits;
 - an append-only SHA-256 hash-chained audit ledger;
 - a JSON status contract and browser dashboard;
 - unit, policy, tamper-detection, and end-to-end tests;
 - hourly and manual GitHub Actions execution.
+
+The hourly invocation remains active. An exact repeat reports `NO_CHANGE` only
+after validating the ledger, evidence register, and persisted status bindings.
+Any request, Decision Court policy, cycle policy, or governed implementation
+change runs a full Court cycle. [EF-016]
 
 ## Run it
 

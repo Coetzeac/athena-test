@@ -18,6 +18,7 @@ class OrchestratorTests(unittest.TestCase):
                 root / "evidence-register.jsonl",
             )
             self.assertEqual(status["state"], "OPERATIONAL")
+            self.assertEqual(status["cycle_control"]["outcome"], "EXECUTED")
             self.assertEqual(status["cycle"]["verdict"], "HOLD")
             self.assertTrue(status["audit"]["valid"])
             self.assertEqual(status["audit"]["entries"], 6)
