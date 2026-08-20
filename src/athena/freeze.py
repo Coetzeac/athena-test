@@ -83,6 +83,23 @@ APPROVED_MARKET_DATA = {
     "evidence_ids": ["EF-002", "EF-006", "EF-010", "EF-014"],
 }
 
+APPROVED_RUNTIME_PERSISTENCE = {
+    "resolution_id": "ATHENA-RPR-001",
+    "postgresql_authority": "canonical operational state",
+    "object_store_interface": "S3-compatible",
+    "object_store_authority": "immutable runtime bytes",
+    "redis_authority": "transient coordination only",
+    "redis_canonical_records_permitted": False,
+    "recovery_point_objective_minutes": 60,
+    "recovery_time_objective_minutes": 240,
+    "offsite_separate_failure_domain_required": True,
+    "encrypted_backup_required": True,
+    "production_acceptance_requires_observed_restore": True,
+    "production_ready": False,
+    "live_execution": "prohibited",
+    "evidence_ids": ["EF-002", "EF-006", "EF-015"],
+}
+
 
 class FreezeValidationError(ValueError):
     """Raised when a protected engineering-freeze invariant is violated."""
@@ -170,6 +187,8 @@ def validate_freeze(freeze: dict[str, Any]) -> dict[str, Any]:
 
     if freeze.get("approved_market_data") != APPROVED_MARKET_DATA:
         failures.append("approved market-data resolution differs from ATHENA-MDR-001")
+    if freeze.get("approved_runtime_persistence") != APPROVED_RUNTIME_PERSISTENCE:
+        failures.append("approved runtime-persistence resolution differs from ATHENA-RPR-001")
 
     evidence_ids = {
         item.get("evidence_id") for item in freeze.get("evidence_register", [])
@@ -179,6 +198,8 @@ def validate_freeze(freeze: dict[str, Any]) -> dict[str, Any]:
         failures.append("evidence IDs must be present and unique")
     if "EF-014" not in evidence_ids:
         failures.append("market-data approval evidence EF-014 is missing")
+    if "EF-015" not in evidence_ids:
+        failures.append("runtime-persistence approval evidence EF-015 is missing")
     referenced_ids = _collect_evidence_references(freeze)
     unknown_evidence = referenced_ids - evidence_ids
     if unknown_evidence:

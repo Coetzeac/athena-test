@@ -123,12 +123,14 @@ live execution.
 The controller deliberately does not commit provider bytes to the public
 repository. Real acquisition therefore remains operationally blocked until a
 durable private object store and canonical persistent control paths are
-configured. Ephemeral CI storage is not acceptable evidence retention.
+deployed and verified under `ATHENA-RPR-001`. The contract and synthetic restore
+now execute, but ephemeral CI storage is not acceptable production evidence.
+[EF-015]
 
 ## Acceptance boundary
 
 This increment implements and tests planning, resumability, quotas, manifests,
 coverage gates, checkpoints, completeness reports, tamper detection, and ledger
-reconciliation. It does not itself acquire the full provider history, configure
+reconciliation. It does not itself acquire the full provider history, deploy
 private production storage, create 0–100 features, implement ATH-001, or
 authorize live execution. `FR-005` remains `partial`. [EF-014]

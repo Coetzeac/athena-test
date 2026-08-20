@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/storage-object-reference.schema.json",
+  "title": "ATHENA immutable object reference",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "resolution_id", "kind", "bucket", "key", "version_id", "content_sha256", "content_length", "content_type", "server_side_encryption"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "resolution_id": {"const": "ATHENA-RPR-001"},
+    "kind": {"enum": ["market_raw", "market_normalized", "research_source", "chart", "manifest", "report", "backup", "recovery_manifest"]},
+    "bucket": {"type": "string", "minLength": 3},
+    "key": {"type": "string", "pattern": "^objects/[a-z_]+/sha256/[0-9a-f]{2}/[0-9a-f]{64}$"},
+    "version_id": {"type": "string", "minLength": 1},
+    "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_length": {"type": "integer", "minimum": 1},
+    "content_type": {"type": "string", "minLength": 1},
+    "server_side_encryption": {"const": "AES256"}
+  }
+}

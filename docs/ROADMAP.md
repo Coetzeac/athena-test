@@ -20,6 +20,10 @@ file whose verdict can be reproduced from the example request.
 
 ## Phase 1 — research laboratory
 
+- Runtime-persistence policy, closed schemas, PostgreSQL migrations,
+  S3-compatible immutable-object controls, bounded Redis coordination, and a
+  synthetic recovery proof. Production deployment and observed RPO/RTO evidence
+  remain outstanding. [EF-015]
 - Historical market-data adapter and resumable acquisition control plane with
   Dataset fingerprints, immutable manifests, quota reservations, terminal
   checkpoints, and completeness reports. Real durable acquisition of the

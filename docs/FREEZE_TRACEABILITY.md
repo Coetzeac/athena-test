@@ -6,7 +6,8 @@ The complete engineering freeze is integrated as a controlled specification,
 but it is not fully implemented. The executable Phase 0 kernel now covers stable
 knowledge-record identities, provenance, dataset fingerprints, controlled
 synthetic paper intake, approved market-data intake, historical planning and
-resumption controls, claim links, quarantine, an append-only evidence register,
+resumption controls, runtime-persistence contracts and synthetic recovery,
+claim links, quarantine, an append-only evidence register,
 register-ledger reconciliation, the Court, basic metrics, CLI, CI, and a partial
 dashboard. The required research corpus, complete retained provider history and feature plane,
 validation laboratory, durable runtime, Drive system of record, Pine parity,
@@ -37,7 +38,7 @@ status terms mean:
 | FR-008 Court and Skeptic | Partial | Court exists; distinct Skeptic/Risk/Strategy components absent |
 | FR-009 Specialists | Scaffolded | Roles recorded; durable workers absent |
 | FR-010 VPS runtime | Blocked external | VPS, domain, Docker production environment absent |
-| FR-011 Runtime storage | Pending | PostgreSQL/Redis/object-store schemas and recovery absent |
+| FR-011 Runtime storage | Partial | Policies, schemas, migrations, object/Redis controls and synthetic restore execute; production endpoints, off-site backup and observed timed restore absent |
 | FR-012 Mission Control | Partial | Phase 0 dashboard only; no full telemetry or 08:00 report |
 | FR-013 Systems of record | Blocked external | Drive structure/connectors/reconciliation not verified |
 | FR-014 Pine/TradingView | Pending | No Python/Pine parity or TradingView ingestion |
@@ -49,8 +50,9 @@ status terms mean:
 
 1. Populate eligible papers, Research Cards, hypotheses, formulae, and claim
    relationships through controlled intake and approved systems of record.
-2. Configure durable private object storage and canonical persistent control
-   paths, then execute the approved immutable manifest across the full universe.
+2. Deploy the approved PostgreSQL/S3-compatible/Redis persistence contracts,
+   configure off-site backup, complete an observed timed restore, then execute
+   the approved immutable market-data manifest across the full universe.
 3. Implement ATH-001 in Python with reproducible test fixtures and registered datasets.
 4. Implement the walk-forward, Monte Carlo, cross-market, sensitivity, and
    robustness gates.

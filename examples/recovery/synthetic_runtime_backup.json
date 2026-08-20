@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "fixture": "synthetic-runtime-backup",
+  "evidence_ids": ["EF-015"],
+  "production_data": false,
+  "records": [
+    {"sequence": 1, "status": "HOLD", "reason": "synthetic recovery control proof only"}
+  ]
+}

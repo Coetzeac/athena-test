@@ -183,6 +183,13 @@ Production acceptance still requires an approved VPS, health checks, durable
 queues, backups, restore evidence, cost controls, and 30 consecutive days of
 recoverable paper operation.
 
+`ATHENA-RPR-001` now fixes PostgreSQL as canonical operational state, a private
+S3-compatible store as immutable runtime-byte storage, and Redis as transient
+coordination only. It also fixes a 60-minute RPO and 240-minute RTO. The
+repository implements and tests these contracts, but no production endpoint,
+off-site backup, or observed timed restore exists; `FR-011` is therefore
+`partial`. [EF-006, EF-015]
+
 ## Systems of record
 
 Authority is divided deliberately:
@@ -228,5 +235,6 @@ The market-data provider, initial universe, history windows, intervals, internal
 usage boundary, and data budget are now controlled by `ATHENA-MDR-001`. The
 freeze still does not establish the broker, commercial redistribution licence,
 numeric validation parameters, production risk limits, VPS provider, domain,
-SLO, RPO, RTO, or the remaining operating budgets. Those items require separate
-evidence-backed proposals and Owner/CIO approval.
+SLO beyond the approved persistence recovery objectives, or the remaining
+operating budgets. Those items require separate evidence-backed proposals and
+Owner/CIO approval. [EF-015]

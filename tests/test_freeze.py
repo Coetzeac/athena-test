@@ -24,8 +24,8 @@ class EngineeringFreezeTests(unittest.TestCase):
         self.assertEqual(mapping["status_counts"], {
             "blocked_external": 2,
             "implemented": 1,
-            "partial": 8,
-            "pending": 3,
+            "partial": 9,
+            "pending": 2,
             "scaffolded": 3,
         })
 
@@ -67,6 +67,15 @@ class EngineeringFreezeTests(unittest.TestCase):
         changed = copy.deepcopy(freeze)
         changed["approved_market_data"]["universe"].append("XAU/USD")
         changed["approved_market_data"]["live_execution"] = "permitted"
+        with self.assertRaises(FreezeValidationError):
+            validate_freeze(changed)
+
+    def test_runtime_persistence_resolution_cannot_be_weakened(self) -> None:
+        freeze = load_freeze(FREEZE_PATH)
+        changed = copy.deepcopy(freeze)
+        changed["approved_runtime_persistence"]["redis_canonical_records_permitted"] = True
+        changed["approved_runtime_persistence"]["recovery_point_objective_minutes"] = 1440
+        changed["approved_runtime_persistence"]["production_ready"] = True
         with self.assertRaises(FreezeValidationError):
             validate_freeze(changed)
 

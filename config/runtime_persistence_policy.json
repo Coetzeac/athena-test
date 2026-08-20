@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "resolution_id": "ATHENA-RPR-001",
+  "status": "approved_implementation_control",
+  "approved_at": "2026-08-14",
+  "authority": "Owner/CIO",
+  "evidence_ids": ["EF-002", "EF-006", "EF-015"],
+  "requirements": ["FR-011", "FR-015", "FR-017"],
+  "stores": {
+    "postgresql": {
+      "authority": "canonical_operational_state",
+      "schema": "athena",
+      "minimum_major_version": 16,
+      "tls_at_external_boundary": true,
+      "migration_sha256": [
+        {"filename": "0001_runtime_state.sql", "sha256": "7778a7bc9d2c50f59369e0aee751548857b562bb9575cc6a0ebac40ac6b13839"},
+        {"filename": "0002_recovery_catalog.sql", "sha256": "26c8cf911a0098576b0dc5ef31803de307802259f1202adf87b1e475ddb5122a"}
+      ],
+      "canonical_collections": [
+        "audit_ledger",
+        "evidence_register",
+        "historical_manifests",
+        "historical_checkpoints",
+        "quota_reservations",
+        "quarantine_index",
+        "object_catalog",
+        "runtime_status",
+        "recovery_catalog"
+      ]
+    },
+    "object_store": {
+      "authority": "immutable_runtime_bytes",
+      "interface": "S3-compatible",
+      "bucket_environment_variable": "ATHENA_OBJECT_BUCKET",
+      "endpoint_environment_variable": "ATHENA_S3_ENDPOINT_URL",
+      "content_addressed": true,
+      "versioning_required": true,
+      "public_access": false,
+      "server_side_encryption": "AES256",
+      "tls_at_external_boundary": true,
+      "canonical_kinds": [
+        "market_raw",
+        "market_normalized",
+        "research_source",
+        "chart",
+        "manifest",
+        "report",
+        "backup",
+        "recovery_manifest"
+      ]
+    },
+    "redis": {
+      "authority": "transient_coordination_only",
+      "canonical_record_permitted": false,
+      "maximum_ttl_seconds": 86400,
+      "maximum_payload_bytes": 65536,
+      "tls_at_external_boundary": true
+    }
+  },
+  "recovery": {
+    "recovery_point_objective_minutes": 60,
+    "recovery_time_objective_minutes": 240,
+    "offsite_separate_failure_domain_required": true,
+    "encrypted_backup_required": true,
+    "backup_retention_days": 35,
+    "restore_test_cadence_days": 30,
+    "production_acceptance_requires_observed_restore": true
+  },
+  "secrets": {
+    "permitted_source": "runtime_environment_or_secret_store",
+    "repository_values_prohibited": true,
+    "required_environment_variables": [
+      "ATHENA_POSTGRES_DSN",
+      "ATHENA_REDIS_URL",
+      "ATHENA_S3_ENDPOINT_URL",
+      "ATHENA_OBJECT_BUCKET",
+      "ATHENA_S3_ACCESS_KEY_ID",
+      "ATHENA_S3_SECRET_ACCESS_KEY"
+    ]
+  },
+  "production_ready": false,
+  "decision_court_bypass": "prohibited",
+  "live_execution": "prohibited"
+}
