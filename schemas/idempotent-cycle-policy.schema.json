@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena.invalid/schemas/idempotent-cycle-policy.schema.json",
+  "title": "ATHENA idempotent-cycle policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "control_id", "status", "approved_at", "authority", "evidence_ids", "requirements", "schedule", "input_identity", "exact_repeat", "changed_input", "decision_court_bypass", "live_execution"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "control_id": {"const": "ATHENA-ICC-001"},
+    "status": {"const": "approved_implementation_control"},
+    "approved_at": {"const": "2026-08-20"},
+    "authority": {"const": "Owner/CIO"},
+    "evidence_ids": {"const": ["EF-002", "EF-004", "EF-005", "EF-012", "EF-016"]},
+    "requirements": {"const": ["FR-001", "FR-008", "FR-012", "FR-017"]},
+    "schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cadence", "cron", "workflow", "validation_on_every_invocation"],
+      "properties": {
+        "cadence": {"const": "hourly"},
+        "cron": {"const": "17 * * * *"},
+        "workflow": {"const": ".github/workflows/athena-cycle.yml"},
+        "validation_on_every_invocation": {"const": true}
+      }
+    },
+    "input_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "canonicalization", "components", "implementation_files"],
+      "properties": {
+        "algorithm": {"const": "sha256"},
+        "canonicalization": {"const": "raw_bytes_and_sorted_manifest"},
+        "components": {"const": ["research_request", "decision_policy", "cycle_policy", "implementation"]},
+        "implementation_files": {"type": "array", "minItems": 9, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "exact_repeat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validate_ledger", "validate_register", "validate_status_bindings", "append_ledger_records", "append_register_records", "write_status_bytes", "workflow_commit", "outcome"],
+      "properties": {
+        "validate_ledger": {"const": true},
+        "validate_register": {"const": true},
+        "validate_status_bindings": {"const": true},
+        "append_ledger_records": {"const": 0},
+        "append_register_records": {"const": 0},
+        "write_status_bytes": {"const": false},
+        "workflow_commit": {"const": false},
+        "outcome": {"const": "NO_CHANGE"}
+      }
+    },
+    "changed_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_full_decision_court_cycle", "append_audit_evidence", "write_status", "outcome"],
+      "properties": {
+        "run_full_decision_court_cycle": {"const": true},
+        "append_audit_evidence": {"const": true},
+        "write_status": {"const": true},
+        "outcome": {"const": "EXECUTED"}
+      }
+    },
+    "decision_court_bypass": {"const": "prohibited"},
+    "live_execution": {"const": "prohibited"}
+  }
+}

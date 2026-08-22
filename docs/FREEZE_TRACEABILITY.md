@@ -13,6 +13,12 @@ dashboard. The required research corpus, complete retained provider history and 
 validation laboratory, durable runtime, Drive system of record, Pine parity,
 and controlled trading interfaces remain incomplete.
 
+The approved `ATHENA-ICC-001` increment now gives the hourly runner a
+fail-closed exact-input identity and zero-write `NO_CHANGE` outcome. It prevents
+duplicate records and runtime-only commits but does not supply the missing
+production scheduler, research activity, learning workers, or 30-day operating
+evidence. [EF-016]
+
 The authoritative machine register is `config/freeze_traceability.json`. Its
 status terms mean:
 
@@ -28,14 +34,14 @@ status terms mean:
 
 | Requirement | State | Principal deficiency |
 |---|---|---|
-| FR-001 Continuous mission | Partial | No complete continuous research/learning organization |
+| FR-001 Continuous mission | Partial | Hourly exact-repeat control exists; no complete continuous research/learning organization or 30-day production evidence |
 | FR-002 Seven layers | Partial | Knowledge/Evidence intake contracts execute; the remaining layers lack complete stable interfaces |
 | FR-003 Scale targets | Partial | Intake/register capability exists; the required evidence corpus and counts do not |
 | FR-004 Fixed pipeline | Partial | Phase 0 packet-to-Court path only |
 | FR-005 Market intelligence | Partial | Adapter and acquisition control plane execute; complete retained provider history and normalized feature engine absent |
 | FR-006 Experiment queue | Scaffolded | Queue recorded; ATH-001 not implemented |
 | FR-007 Validation | Pending | No walk-forward, Monte Carlo, cross-market, or sensitivity engine |
-| FR-008 Court and Skeptic | Partial | Court exists; distinct Skeptic/Risk/Strategy components absent |
+| FR-008 Court and Skeptic | Partial | Exact repeats cannot bypass changed-input adjudication; distinct Skeptic/Risk/Strategy components absent |
 | FR-009 Specialists | Scaffolded | Roles recorded; durable workers absent |
 | FR-010 VPS runtime | Blocked external | VPS, domain, Docker production environment absent |
 | FR-011 Runtime storage | Partial | Policies, schemas, migrations, object/Redis controls and synthetic restore execute; production endpoints, off-site backup and observed timed restore absent |

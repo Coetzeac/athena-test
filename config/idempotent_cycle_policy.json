@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "control_id": "ATHENA-ICC-001",
+  "status": "approved_implementation_control",
+  "approved_at": "2026-08-20",
+  "authority": "Owner/CIO",
+  "evidence_ids": ["EF-002", "EF-004", "EF-005", "EF-012", "EF-016"],
+  "requirements": ["FR-001", "FR-008", "FR-012", "FR-017"],
+  "schedule": {
+    "cadence": "hourly",
+    "cron": "17 * * * *",
+    "workflow": ".github/workflows/athena-cycle.yml",
+    "validation_on_every_invocation": true
+  },
+  "input_identity": {
+    "algorithm": "sha256",
+    "canonicalization": "raw_bytes_and_sorted_manifest",
+    "components": ["research_request", "decision_policy", "cycle_policy", "implementation"],
+    "implementation_files": [
+      ".github/workflows/athena-cycle.yml",
+      "src/athena/cli.py",
+      "src/athena/court.py",
+      "src/athena/evidence.py",
+      "src/athena/idempotency.py",
+      "src/athena/metrics.py",
+      "src/athena/models.py",
+      "src/athena/orchestrator.py",
+      "src/athena/records.py"
+    ]
+  },
+  "exact_repeat": {
+    "validate_ledger": true,
+    "validate_register": true,
+    "validate_status_bindings": true,
+    "append_ledger_records": 0,
+    "append_register_records": 0,
+    "write_status_bytes": false,
+    "workflow_commit": false,
+    "outcome": "NO_CHANGE"
+  },
+  "changed_input": {
+    "run_full_decision_court_cycle": true,
+    "append_audit_evidence": true,
+    "write_status": true,
+    "outcome": "EXECUTED"
+  },
+  "decision_court_bypass": "prohibited",
+  "live_execution": "prohibited"
+}

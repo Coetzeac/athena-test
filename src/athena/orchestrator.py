@@ -6,6 +6,12 @@ from typing import Any
 
 from athena.court import DecisionCourt, DecisionPolicy
 from athena.evidence import EvidenceLedger, canonical_json, sha256_text
+from athena.idempotency import (
+    CONTROL_ID,
+    EXECUTED_REASON,
+    CycleControlPolicy,
+    reuse_exact_cycle_if_valid,
+)
 from athena.metrics import calculate_metrics
 from athena.models import EvidenceRef, ResearchPacket, utc_now
 from athena.records import DatasetFingerprint, EvidenceRegister, KnowledgeRecord, Provenance, RecordType
@@ -155,6 +161,7 @@ def run_cycle(
     ledger_path: str | Path,
     status_path: str | Path,
     register_path: str | Path | None = None,
+    cycle_policy_path: str | Path = "config/idempotent_cycle_policy.json",
 ) -> dict[str, Any]:
     ledger = EvidenceLedger(ledger_path)
     ledger.validate()
@@ -165,6 +172,18 @@ def run_cycle(
     register = EvidenceRegister(
         register_path if register_path is not None else Path(ledger_path).with_name("evidence-register.jsonl")
     )
+    decision_policy = DecisionPolicy.from_file(policy_path)
+    cycle_policy = CycleControlPolicy.from_file(cycle_policy_path)
+    input_identity = cycle_policy.input_identity(request_path, policy_path)
+    reused = reuse_exact_cycle_if_valid(
+        status_path,
+        input_identity,
+        ledger,
+        register,
+    )
+    if reused is not None:
+        return reused
+
     registered = _register_cycle_inputs(packet, raw, request_path, policy_path, register, ledger)
     input_record_ids = {name: record.record_id for name, record in registered.items()}
 
@@ -177,9 +196,13 @@ def run_cycle(
             "declared_outcomes": len(raw["trade_outcomes_r"]),
             "evidence_ids": [item.evidence_id for item in packet.evidence],
             "evidence_record_ids": input_record_ids,
+            "cycle_control": {
+                "control_id": CONTROL_ID,
+                "input": input_identity,
+            },
         },
     )
-    court = DecisionCourt(DecisionPolicy.from_file(policy_path))
+    court = DecisionCourt(decision_policy)
     decision = court.adjudicate(packet)
     verdict_entry = ledger.append(
         "decision_court_verdict",
@@ -189,6 +212,11 @@ def run_cycle(
             "packet": packet.to_dict(),
             "decision": decision.to_dict(),
             "evidence_record_ids": input_record_ids,
+            "cycle_submission_hash": cycle_entry["hash"],
+            "cycle_control": {
+                "control_id": CONTROL_ID,
+                "input": input_identity,
+            },
         },
     )
     decision_payload = decision.to_dict()
@@ -235,6 +263,12 @@ def run_cycle(
         "system": "ATHENA",
         "state": "OPERATIONAL",
         "updated_at": utc_now(),
+        "cycle_control": {
+            "control_id": CONTROL_ID,
+            "outcome": "EXECUTED",
+            "reason": EXECUTED_REASON,
+            "input": input_identity,
+        },
         "cycle": {
             "id": cycle_entry["hash"][:12],
             "strategy_id": packet.strategy_id,
