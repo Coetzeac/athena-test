@@ -1,8 +1,8 @@
 {
   "audit": {
-    "entries": 586,
-    "latest_verdict_hash": "76f30f5a5e195f6ffcf71c53373f3671c3ef5983b3ab14ede400fb12b868f670",
-    "terminal_hash": "7ba41647136ef5b3fe5d89a52e5a0cc9961227b090f6a06566e8b4b8cfec559f",
+    "entries": 589,
+    "latest_verdict_hash": "d2e672c73e020187762eea41f433ee58b3e7e6c766f4589117c6aec1dd04f6a6",
+    "terminal_hash": "80054a8b7a98a595522492a73d7fda684bdc70570bbd79ea2306fdd94ded1aa4",
     "valid": true
   },
   "counter_evidence": [
@@ -11,7 +11,7 @@
     "No out-of-sample, walk-forward, regime, or front-test evidence exists."
   ],
   "cycle": {
-    "id": "6e13aa64d56e",
+    "id": "00d5c04ad67f",
     "instrument": "GBPUSD",
     "recommendation": "Promote the rule set only to the next controlled research stage if every Decision Court gate passes.",
     "strategy_id": "ORB-LONDON-GBPUSD-001",
@@ -19,7 +19,7 @@
     "verdict": "HOLD"
   },
   "decision": {
-    "adjudicated_at": "2026-08-22T03:06:06.890124+00:00",
+    "adjudicated_at": "2026-08-22T03:53:59.405402+00:00",
     "confidence": 0.562493877226366,
     "evidence_weight": 0.5833333333333333,
     "gates": [
@@ -141,10 +141,10 @@
       "dataset": "ATH-DAT-D923A2000FDA58017D11DBDE",
       "experiment": "ATH-EXP-F4FB8A8623B7C7F4612F4F30",
       "strategy": "ATH-STR-F35DF5D13E3C7B3A334C7974",
-      "validation_result": "ATH-VAL-67FDC7F0A6B3DE297370A92F"
+      "validation_result": "ATH-VAL-08AC75188D6D9950B520CA8E"
     },
-    "entries": 196,
-    "ledger_links": 196,
+    "entries": 197,
+    "ledger_links": 197,
     "record_ids": [
       "ATH-DAT-D923A2000FDA58017D11DBDE",
       "ATH-EXP-F4FB8A8623B7C7F4612F4F30",
@@ -156,6 +156,7 @@
       "ATH-VAL-064E34EBC7A9FD1BAB3917AF",
       "ATH-VAL-06578B32F790C14CC454D3BB",
       "ATH-VAL-0748A1AE84EDD65D67888DEC",
+      "ATH-VAL-08AC75188D6D9950B520CA8E",
       "ATH-VAL-0A469075A9EC1EFDEB924EF4",
       "ATH-VAL-0AE1E8F7359AE9EAA4817C54",
       "ATH-VAL-0BF8DA305D65F935D1AAD2A5",
@@ -354,9 +355,9 @@
       "paper": 0,
       "research_card": 0,
       "strategy": 1,
-      "validation_result": 193
+      "validation_result": 194
     },
-    "register_sha256": "5c33234ea8d00171ad09598cb166e808dc74f0fc8bf2db0d586879ba3b056f30",
+    "register_sha256": "e28f9bbe43492a64a148ff99c3f2cbadce9990ccbd391d74752ee517dd774d52",
     "schema_version": 1,
     "valid": true
   },
@@ -382,5 +383,5 @@
   "schema_version": 1,
   "state": "OPERATIONAL",
   "system": "ATHENA",
-  "updated_at": "2026-08-22T03:06:07.191155+00:00"
+  "updated_at": "2026-08-22T03:53:59.690143+00:00"
 }
