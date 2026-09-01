@@ -14,6 +14,8 @@ register. Phase labels do not override a frozen requirement or acceptance gate.
 - Adversarial challenge and risk fields.
 - Versioned Decision Court gates.
 - End-to-end CLI, status contract, dashboard, tests, and hourly runner.
+- Exact-input cycle identity and a fail-closed, zero-write `NO_CHANGE` replay
+  path under `ATHENA-ICC-001`. [EF-016]
 
 Acceptance: `make test` passes; `make demo` writes a valid ledger and a status
 file whose verdict can be reproduced from the example request.

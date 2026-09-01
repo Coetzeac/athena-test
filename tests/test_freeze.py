@@ -79,6 +79,15 @@ class EngineeringFreezeTests(unittest.TestCase):
         with self.assertRaises(FreezeValidationError):
             validate_freeze(changed)
 
+    def test_idempotent_cycle_control_cannot_be_weakened(self) -> None:
+        freeze = load_freeze(FREEZE_PATH)
+        changed = copy.deepcopy(freeze)
+        changed["approved_idempotent_cycle"]["validation_on_every_invocation"] = False
+        changed["approved_idempotent_cycle"]["append_ledger_records"] = 1
+        changed["approved_idempotent_cycle"]["decision_court_bypass"] = "permitted"
+        with self.assertRaises(FreezeValidationError):
+            validate_freeze(changed)
+
 
 if __name__ == "__main__":
     unittest.main()

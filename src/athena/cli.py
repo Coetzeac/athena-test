@@ -15,6 +15,7 @@ from athena.history import (
     validate_historical_policy,
     validate_historical_state,
 )
+from athena.idempotency import validate_cycle_control_policy
 from athena.intake import QuarantineRegister, ResearchIntake, validate_intake_policy, validate_intake_state
 from athena.market_data import (
     MarketDataIntake,
@@ -44,6 +45,7 @@ DEFAULT_INTAKE_POLICY = Path("config/research_intake_policy.json")
 DEFAULT_MARKET_DATA_POLICY = Path("config/market_data_policy.json")
 DEFAULT_HISTORY_POLICY = Path("config/historical_acquisition_policy.json")
 DEFAULT_PERSISTENCE_POLICY = Path("config/runtime_persistence_policy.json")
+DEFAULT_CYCLE_POLICY = Path("config/idempotent_cycle_policy.json")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -56,6 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--ledger", type=Path, default=Path("runtime/ledger.jsonl"))
     run.add_argument("--status", type=Path, default=Path("runtime/status.json"))
     run.add_argument("--register", type=Path, default=None)
+    run.add_argument("--cycle-policy", type=Path, default=DEFAULT_CYCLE_POLICY)
 
     validate = subcommands.add_parser("validate-ledger", help="validate the audit hash chain")
     validate.add_argument("ledger", type=Path)
@@ -242,6 +245,7 @@ def build_parser() -> argparse.ArgumentParser:
     freeze.add_argument("--market-data-policy", type=Path, default=DEFAULT_MARKET_DATA_POLICY)
     freeze.add_argument("--history-policy", type=Path, default=DEFAULT_HISTORY_POLICY)
     freeze.add_argument("--persistence-policy", type=Path, default=DEFAULT_PERSISTENCE_POLICY)
+    freeze.add_argument("--cycle-policy", type=Path, default=DEFAULT_CYCLE_POLICY)
     freeze.add_argument("--repository-root", type=Path, default=Path("."))
     return parser
 
@@ -249,9 +253,18 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "run":
-        status = run_cycle(args.request, args.policy, args.ledger, args.status, args.register)
+        status = run_cycle(
+            args.request,
+            args.policy,
+            args.ledger,
+            args.status,
+            args.register,
+            args.cycle_policy,
+        )
         print(json.dumps({
             "state": status["state"],
+            "cycle_outcome": status["cycle_control"]["outcome"],
+            "cycle_reason": status["cycle_control"]["reason"],
             "strategy_id": status["cycle"]["strategy_id"],
             "verdict": status["cycle"]["verdict"],
             "status_path": str(args.status),
@@ -424,6 +437,10 @@ def main(argv: list[str] | None = None) -> int:
             args.persistence_policy,
             args.repository_root,
         )
+        cycle_control_status = validate_cycle_control_policy(
+            args.cycle_policy,
+            args.repository_root,
+        )
         print(json.dumps({
             "freeze": freeze_status,
             "traceability": traceability_status,
@@ -432,6 +449,7 @@ def main(argv: list[str] | None = None) -> int:
             "market_data": market_data_status,
             "historical_acquisition": history_status,
             "runtime_persistence": persistence_status,
+            "idempotent_cycle": cycle_control_status,
         }, indent=2))
         return 0
     raise AssertionError("unreachable command")

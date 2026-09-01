@@ -17,6 +17,12 @@ metric overrides the policy.
 7. Append the packet and verdict to the audit ledger.
 8. Apply the stated remediation before resubmission.
 
+An exact repeat may reuse its already recorded Court verdict only under
+`ATHENA-ICC-001`: the request, policies, and governed implementation identity
+must match, and all ledger, register, and status bindings must validate. The
+reuse path appends and writes nothing. Any governed change requires a full new
+Court cycle. This is a replay control, not a Court bypass. [EF-016]
+
 ## Accountability
 
 Every event identifies the actor that produced it. Policy changes must identify
@@ -49,4 +55,4 @@ performance.
 | Policy/version mismatch | Refuse adjudication | Immediately |
 | Suspected leakage or fabrication | Quarantine the packet and preserve evidence | Immediately |
 | Workflow failure | Retain logs and block status promotion | Before next cycle |
-
+| Cycle identity or status-binding failure | Stop before append; retain bytes and reconcile terminal hashes | Immediately |
