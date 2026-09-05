@@ -1,0 +1,33 @@
+name: Untouched Market Mechanics Test
+
+on:
+  push:
+    branches:
+      - research/untouched-market-mechanics-2002-2019
+    paths:
+      - research/untouched_market_mechanics.py
+      - .github/workflows/untouched-market-mechanics.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install pandas numpy scipy
+      - name: Run frozen holdout test
+        run: python research/untouched_market_mechanics.py
+      - name: Upload audit packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: untouched-market-mechanics-results
+          path: runtime/research/untouched-market-mechanics-2002-2019/
+          if-no-files-found: error
