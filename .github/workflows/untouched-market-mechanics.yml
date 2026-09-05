@@ -7,6 +7,7 @@ on:
     paths:
       - research/untouched_market_mechanics.py
       - research/run_fxcm_untouched.py
+      - research/run_fxcm_untouched_parallel.py
       - .github/workflows/untouched-market-mechanics.yml
   workflow_dispatch:
 
@@ -25,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: pip install pandas numpy scipy
       - name: Run frozen holdout test using FXCM source
-        run: python research/run_fxcm_untouched.py
+        run: python research/run_fxcm_untouched_parallel.py
       - name: Upload audit packet
         uses: actions/upload-artifact@v4
         with:
