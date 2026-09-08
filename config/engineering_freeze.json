@@ -100,6 +100,12 @@
       "observed_at": "2026-08-14",
       "authority": "user_approval",
       "record": "ATHENA Runtime Persistence Resolution 1 approves PostgreSQL as canonical operational state, private S3-compatible content-addressed object storage for immutable runtime bytes, Redis for transient coordination only, encrypted off-site backups, a 60-minute RPO, a 240-minute RTO, closed schemas, migrations, integrity and restore tests, Docker development infrastructure, no repository credentials, no production-readiness claim without observed restore evidence, and no live execution."
+    },
+    {
+      "evidence_id": "EF-016",
+      "observed_at": "2026-08-20",
+      "authority": "user_approval",
+      "record": "The Owner/CIO approves ATHENA Idempotent Cycle Control 1: preserve the hourly validation schedule; bind each cycle to exact request, Decision Court policy, cycle policy, and governed implementation digests; treat an exact repeat as a fail-closed NO_CHANGE only after validating the ledger, evidence register, and status bindings; append no duplicate records, write no status bytes, and create no workflow commit; run the full Decision Court cycle whenever a governed input changes; prohibit Court bypass and live execution."
     }
   ],
   "mission": {
@@ -257,6 +263,26 @@
     "production_ready": false,
     "live_execution": "prohibited",
     "evidence_ids": ["EF-002", "EF-006", "EF-015"]
+  },
+  "approved_idempotent_cycle": {
+    "resolution_id": "ATHENA-ICC-001",
+    "schedule": "hourly",
+    "cron": "17 * * * *",
+    "validation_on_every_invocation": true,
+    "input_components": ["research_request", "decision_policy", "cycle_policy", "implementation"],
+    "exact_repeat_outcome": "NO_CHANGE",
+    "validate_ledger": true,
+    "validate_register": true,
+    "validate_status_bindings": true,
+    "append_ledger_records": 0,
+    "append_register_records": 0,
+    "write_status_bytes": false,
+    "workflow_commit": false,
+    "changed_input_action": "full Decision Court cycle",
+    "tamper_response": "fail_closed",
+    "decision_court_bypass": "prohibited",
+    "live_execution": "prohibited",
+    "evidence_ids": ["EF-002", "EF-004", "EF-005", "EF-012", "EF-016"]
   },
   "experiment_queue": [
     {"experiment_id": "ATH-001", "name": "HAR-RV Proxy", "status": "first controlled experiment"},
