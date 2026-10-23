@@ -100,6 +100,27 @@ APPROVED_RUNTIME_PERSISTENCE = {
     "evidence_ids": ["EF-002", "EF-006", "EF-015"],
 }
 
+APPROVED_IDEMPOTENT_CYCLE = {
+    "resolution_id": "ATHENA-ICC-001",
+    "schedule": "hourly",
+    "cron": "17 * * * *",
+    "validation_on_every_invocation": True,
+    "input_components": ["research_request", "decision_policy", "cycle_policy", "implementation"],
+    "exact_repeat_outcome": "NO_CHANGE",
+    "validate_ledger": True,
+    "validate_register": True,
+    "validate_status_bindings": True,
+    "append_ledger_records": 0,
+    "append_register_records": 0,
+    "write_status_bytes": False,
+    "workflow_commit": False,
+    "changed_input_action": "full Decision Court cycle",
+    "tamper_response": "fail_closed",
+    "decision_court_bypass": "prohibited",
+    "live_execution": "prohibited",
+    "evidence_ids": ["EF-002", "EF-004", "EF-005", "EF-012", "EF-016"],
+}
+
 
 class FreezeValidationError(ValueError):
     """Raised when a protected engineering-freeze invariant is violated."""
@@ -189,6 +210,8 @@ def validate_freeze(freeze: dict[str, Any]) -> dict[str, Any]:
         failures.append("approved market-data resolution differs from ATHENA-MDR-001")
     if freeze.get("approved_runtime_persistence") != APPROVED_RUNTIME_PERSISTENCE:
         failures.append("approved runtime-persistence resolution differs from ATHENA-RPR-001")
+    if freeze.get("approved_idempotent_cycle") != APPROVED_IDEMPOTENT_CYCLE:
+        failures.append("approved idempotent-cycle control differs from ATHENA-ICC-001")
 
     evidence_ids = {
         item.get("evidence_id") for item in freeze.get("evidence_register", [])
@@ -200,6 +223,8 @@ def validate_freeze(freeze: dict[str, Any]) -> dict[str, Any]:
         failures.append("market-data approval evidence EF-014 is missing")
     if "EF-015" not in evidence_ids:
         failures.append("runtime-persistence approval evidence EF-015 is missing")
+    if "EF-016" not in evidence_ids:
+        failures.append("idempotent-cycle approval evidence EF-016 is missing")
     referenced_ids = _collect_evidence_references(freeze)
     unknown_evidence = referenced_ids - evidence_ids
     if unknown_evidence:

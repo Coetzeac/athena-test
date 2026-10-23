@@ -190,6 +190,15 @@ repository implements and tests these contracts, but no production endpoint,
 off-site backup, or observed timed restore exists; `FR-011` is therefore
 `partial`. [EF-006, EF-015]
 
+`ATHENA-ICC-001` preserves the hourly cycle while binding it to exact request,
+Decision Court policy, cycle policy, and governed implementation digests. An
+exact repeat validates the ledger, register, and status bindings, then returns
+`NO_CHANGE` without appending records, writing status bytes, or creating a
+runtime commit. Any governed change runs the full Decision Court cycle; any
+binding inconsistency fails closed. This improves the interim runner but does
+not prove the complete continuous organization or its 30-day acceptance gate.
+[EF-002, EF-004, EF-005, EF-012, EF-016]
+
 ## Systems of record
 
 Authority is divided deliberately:

@@ -43,6 +43,12 @@ The same identity cannot be reused for different content. Correcting an
 identity or versioned specification requires a new record; history is not
 rewritten.
 
+`ATHENA-ICC-001` adds a cycle-level identity over the exact request, Decision
+Court policy, cycle policy, and governed implementation. A matching identity
+does not create another validation result: the prior immutable Court record is
+reused only after the ledger, register links, and status bindings validate. A
+changed identity creates a new adjudication and validation result. [EF-016]
+
 ## Current executable evidence
 
 Each governed example cycle now registers four artifacts before publishing its
@@ -104,3 +110,5 @@ frozen paper corpus, complete approved market history, deployed PostgreSQL,
 private off-site storage, Google Drive reconciliation, or observed production
 RPO/RTO evidence. FR-002, FR-003, FR-005, and FR-011 therefore remain `partial`;
 none is implemented. [EF-006, EF-009, EF-014, EF-015]
+The idempotent-cycle control prevents duplicate hourly records but does not add
+empirical evidence or complete any of those acceptance conditions. [EF-016]
